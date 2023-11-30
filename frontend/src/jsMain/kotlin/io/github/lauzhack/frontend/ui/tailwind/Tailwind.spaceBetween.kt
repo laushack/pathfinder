@@ -3,7 +3,7 @@ package io.github.lauzhack.frontend.ui.tailwind
 // SPACE BETWEEN (https://tailwindcss.com/docs/space)
 
 private fun TailwindScope.applyToChildren(a: String, b: String) {
-  TODO("implement this.")
+  // TODO("implement this.")
 }
 
 fun TailwindScope.spaceX(n: Float) {

@@ -1,10 +1,8 @@
 package io.github.lauzhack.frontend.jokes
 
 import androidx.compose.runtime.Composable
-import io.github.lauzhack.frontend.ui.tailwind.flex
-import io.github.lauzhack.frontend.ui.tailwind.flexCol
-import io.github.lauzhack.frontend.ui.tailwind.itemsCenter
-import io.github.lauzhack.frontend.ui.tailwind.tailwind
+import io.github.lauzhack.frontend.ui.material.OutlinedButton
+import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLDivElement
 
@@ -13,17 +11,19 @@ fun JokeScreen(
     attrs: AttrBuilderContext<HTMLDivElement> = {},
     state: JokeScreenState,
 ) {
+  val className = tailwind {
+    flex()
+    flexCol()
+    itemsCenter()
+  }
   Div(
       attrs = {
         attrs()
-        tailwind {
-          flex()
-          flexCol()
-          itemsCenter()
-        }
-      }) {
-        H1 { Text("Welcome to the joke service !") }
-        Span { Text(state.jokeText) }
-        Button(attrs = { onClick { state.onRefreshClick() } }) { Text("Refresh") }
-      }
+        classes(className)
+      },
+  ) {
+    H1 { Text("Welcome to the joke service !") }
+    Span { Text(state.jokeText) }
+    OutlinedButton(attrs = { onClick { state.onRefreshClick() } }) { Text("Refresh") }
+  }
 }
