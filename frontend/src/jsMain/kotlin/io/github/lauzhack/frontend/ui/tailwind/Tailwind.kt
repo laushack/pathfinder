@@ -1,4 +1,4 @@
-package io.github.lauzhack.frontend.ui
+package io.github.lauzhack.frontend.ui.tailwind
 
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.w3c.dom.Element

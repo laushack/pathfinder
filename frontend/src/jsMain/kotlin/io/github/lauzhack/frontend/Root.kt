@@ -10,5 +10,5 @@ import org.w3c.dom.HTMLBodyElement
 @Composable
 fun DOMScope<HTMLBodyElement>.Root() {
   val state = rememberJokeScreenState()
-  JokeScreen(state)
+  JokeScreen(state = state)
 }

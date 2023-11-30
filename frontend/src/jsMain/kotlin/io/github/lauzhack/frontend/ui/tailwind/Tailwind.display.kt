@@ -1,4 +1,4 @@
-package io.github.lauzhack.frontend.ui
+package io.github.lauzhack.frontend.ui.tailwind
 
 // https://tailwindcss.com/docs/display
 
