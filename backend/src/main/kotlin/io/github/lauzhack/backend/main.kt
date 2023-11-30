@@ -31,7 +31,7 @@ class State {
 
 /** The main entry point for the backend. */
 fun main() {
-  val port = 8080
+  val port = 8888
   val state = State()
   embeddedServer(CIO, port = port) { application(state) }.start(wait = true)
 }

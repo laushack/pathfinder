@@ -4,7 +4,10 @@ plugins {
 }
 
 kotlin {
-  js(IR) { browser() }
+  js(IR) {
+    browser()
+    binaries.executable()
+  }
   sourceSets {
     val jsMain by getting {
       dependencies {
