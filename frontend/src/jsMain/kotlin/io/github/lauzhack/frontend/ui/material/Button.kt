@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import io.github.lauzhack.frontend.ui.Tokens.primary100
 import io.github.lauzhack.frontend.ui.Tokens.primary150
 import io.github.lauzhack.frontend.ui.Tokens.primary500
+import io.github.lauzhack.frontend.ui.Tokens.primary600
+import io.github.lauzhack.frontend.ui.Tokens.primary700
 import io.github.lauzhack.frontend.ui.Tokens.primaryTransparent
+import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.Button as CoreButton
@@ -22,6 +25,20 @@ fun OutlinedButton(
     buttonTextStyle()
     buttonSmallLayoutStyle()
     buttonFlatColorStyle()
+  }
+}
+
+/** A Material-designed button with a raised appearance. */
+@Composable
+fun Button(
+    attrs: AttrBuilderContext<HTMLButtonElement>? = null,
+    content: ContentBuilder<HTMLButtonElement>? = null
+) {
+  Styled({ a, c -> CoreButton(a, c) }, attrs, content) {
+    buttonStyle()
+    buttonTextStyle()
+    buttonSmallLayoutStyle()
+    buttonRaisedColorStyle()
   }
 }
 
@@ -56,5 +73,21 @@ private fun TailwindScope.buttonFlatColorStyle() {
   border(0)
   hover { bgColor(primary100) }
   active { bgColor(primary150) }
+  transitionAll()
+}
+
+private fun TailwindScope.buttonRaisedColorStyle() {
+  bgColor(primary500)
+  textColor(white)
+  border(0)
+  dropShadow()
+  hover {
+    bgColor(primary600)
+    dropShadowLg()
+  }
+  active {
+    bgColor(primary700)
+    dropShadowXl()
+  }
   transitionAll()
 }

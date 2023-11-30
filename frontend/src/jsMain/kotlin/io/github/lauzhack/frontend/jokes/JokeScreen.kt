@@ -1,7 +1,7 @@
 package io.github.lauzhack.frontend.jokes
 
 import androidx.compose.runtime.Composable
-import io.github.lauzhack.frontend.ui.material.OutlinedButton
+import io.github.lauzhack.frontend.ui.material.Button
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLDivElement
@@ -15,6 +15,7 @@ fun JokeScreen(
     flex()
     flexCol()
     itemsCenter()
+    hScreen()
   }
   Div(
       attrs = {
@@ -24,6 +25,6 @@ fun JokeScreen(
   ) {
     H1 { Text("Welcome to the joke service !") }
     Span { Text(state.jokeText) }
-    OutlinedButton(attrs = { onClick { state.onRefreshClick() } }) { Text("Refresh") }
+    Button(attrs = { onClick { state.onRefreshClick() } }) { Text("Refresh") }
   }
 }
