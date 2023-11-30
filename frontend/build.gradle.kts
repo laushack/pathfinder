@@ -15,7 +15,7 @@ kotlin {
         implementation(compose.runtime)
         implementation(compose.html.core)
 
-        // Ktor client
+        // Ktor (api.ktor.io)
         implementation("io.ktor:ktor-client-js:2.3.6")
       }
     }

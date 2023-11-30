@@ -2,71 +2,62 @@
 
 package io.github.lauzhack.backend
 
-import io.github.lauzhack.common.Message
+import io.github.lauzhack.backend.jokes.HttpClientJokeService
+import io.github.lauzhack.backend.jokes.JokeService
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.datetime.Clock.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-
-/** A common application state.. */
-class State {
-
-  /** A [Mutex] to protect the counter from concurrent access. */
-  private val mutex = Mutex()
-
-  /** The number of requests that have been made to the server. */
-  private var counter = 0
-
-  /** Returns a unique number for each call. */
-  suspend fun next(): Int = mutex.withLock { counter++ }
-}
 
 /** The main entry point for the backend. */
 fun main() {
   val port = 8888
-  val state = State()
-  embeddedServer(CIO, port = port) { application(state) }.start(wait = true)
+  val jokes = HttpClientJokeService()
+  embeddedServer(CIO, port = port) { application(jokes) }.start(wait = true)
 }
 
 /** Configures the application. */
-private fun Application.application(state: State) {
-  http(state)
-  sockets(state)
+private fun Application.application(jokes: JokeService) {
+  cors()
+  contentNegotiation()
+  http(jokes)
+  sockets(jokes)
+}
+
+/** Configures the Cross-Origin Resource Sharing (CORS) plugin. */
+private fun Application.cors() {
+  install(CORS) {
+    anyHost()
+    allowCredentials = true
+    allowNonSimpleContentTypes = true
+  }
+}
+
+/** Configures the Content Negotiation plugin. */
+private fun Application.contentNegotiation() {
+  install(ContentNegotiation) { json() }
 }
 
 /** Configures the HTTP routing. */
-private fun Application.http(state: State) {
+private fun Application.http(service: JokeService) {
   routing {
-    get("/test") {
-      // Send a unique identifier to the client.
-      val now = System.now().epochSeconds
-      val message = Message(now, "server", "Request number ${state.next()}")
-      val encoded = Json.encodeToString(message)
-      call.respondText(encoded)
+    post("/refresh") {
+      service.refresh()
+      call.respond(HttpStatusCode.OK, "")
     }
   }
 }
 
 /** Configures the WebSocket routing. */
-private fun Application.sockets(state: State) {
-  install(WebSockets)
-  routing {
-    webSocket("example") {
-      // Send incrementing identifiers to the client.
-      while (true) {
-        val now = System.now().epochSeconds
-        val message = Message(now, "server", "Msg ${state.next()}")
-        val encoded = Json.encodeToString(message)
-        send(encoded)
-      }
-    }
-  }
+private fun Application.sockets(service: JokeService) {
+  install(WebSockets) { contentConverter = KotlinxWebsocketSerializationConverter(DefaultJson) }
+  routing { webSocket("/live") { service.latestJoke().collect { sendSerialized(it) } } }
 }
