@@ -2,78 +2,78 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // MARGIN (https://tailwindcss.com/docs/margin)
 
-fun TailwindScope.m(n: Float) {
+fun InlineTailwindScope.m(n: Float) {
   property("margin", "${n}px")
 }
 
-fun TailwindScope.mx(n: Float) {
+fun InlineTailwindScope.mx(n: Float) {
   property("margin-left", "${n}px")
   property("margin-right", "${n}px")
 }
 
-fun TailwindScope.my(n: Float) {
+fun InlineTailwindScope.my(n: Float) {
   property("margin-top", "${n}px")
   property("margin-bottom", "${n}px")
 }
 
-fun TailwindScope.ms(n: Float) {
+fun InlineTailwindScope.ms(n: Float) {
   property("margin-inline-start", "${n}px")
 }
 
-fun TailwindScope.me(n: Float) {
+fun InlineTailwindScope.me(n: Float) {
   property("margin-inline-end", "${n}px")
 }
 
-fun TailwindScope.mt(n: Float) {
+fun InlineTailwindScope.mt(n: Float) {
   property("margin-top", "${n}px")
 }
 
-fun TailwindScope.mr(n: Float) {
+fun InlineTailwindScope.mr(n: Float) {
   property("margin-right", "${n}px")
 }
 
-fun TailwindScope.mb(n: Float) {
+fun InlineTailwindScope.mb(n: Float) {
   property("margin-bottom", "${n}px")
 }
 
-fun TailwindScope.ml(n: Float) {
+fun InlineTailwindScope.ml(n: Float) {
   property("margin-left", "${n}px")
 }
 
-fun TailwindScope.mAuto() {
+fun InlineTailwindScope.mAuto() {
   property("margin", "auto")
 }
 
-fun TailwindScope.mxAuto() {
+fun InlineTailwindScope.mxAuto() {
   property("margin-left", "auto")
   property("margin-right", "auto")
 }
 
-fun TailwindScope.myAuto() {
+fun InlineTailwindScope.myAuto() {
   property("margin-top", "auto")
   property("margin-bottom", "auto")
 }
 
-fun TailwindScope.msAuto() {
+fun InlineTailwindScope.msAuto() {
   property("margin-inline-start", "auto")
 }
 
-fun TailwindScope.meAuto() {
+fun InlineTailwindScope.meAuto() {
   property("margin-inline-end", "auto")
 }
 
-fun TailwindScope.mtAuto() {
+fun InlineTailwindScope.mtAuto() {
   property("margin-top", "auto")
 }
 
-fun TailwindScope.mrAuto() {
+fun InlineTailwindScope.mrAuto() {
   property("margin-right", "auto")
 }
 
-fun TailwindScope.mbAuto() {
+fun InlineTailwindScope.mbAuto() {
   property("margin-bottom", "auto")
 }
 
-fun TailwindScope.mlAuto() {
+fun InlineTailwindScope.mlAuto() {
   property("margin-left", "auto")
 }

@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // SCROLL SNAP ALIGN (https://tailwindcss.com/docs/scroll-snap-align)
 
-fun TailwindScope.snapStart() {
+fun InlineTailwindScope.snapStart() {
   property("scroll-snap-align", "start")
 }
 
-fun TailwindScope.snapEnd() {
+fun InlineTailwindScope.snapEnd() {
   property("scroll-snap-align", "end")
 }
 
-fun TailwindScope.snapCenter() {
+fun InlineTailwindScope.snapCenter() {
   property("scroll-snap-align", "center")
 }
 
-fun TailwindScope.snapAlignNone() {
+fun InlineTailwindScope.snapAlignNone() {
   property("scroll-snap-align", "none")
 }

@@ -2,40 +2,40 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // TOP / RIGHT / BOTTOM / LEFT (https://tailwindcss.com/docs/top-right-bottom-left)
 
-fun TailwindScope.inset(n: Float) {
+fun InlineTailwindScope.inset(n: Float) {
   property("inset", "${n}px")
 }
 
-fun TailwindScope.insetX(n: Float) {
+fun InlineTailwindScope.insetX(n: Float) {
   property("left", "${n}px")
   property("right", "${n}px")
 }
 
-fun TailwindScope.insetY(n: Float) {
+fun InlineTailwindScope.insetY(n: Float) {
   property("top", "${n}px")
   property("bottom", "${n}px")
 }
 
-fun TailwindScope.start(n: Float) {
+fun InlineTailwindScope.start(n: Float) {
   property("inset-inline-start", "${n}px")
 }
 
-fun TailwindScope.end(n: Float) {
+fun InlineTailwindScope.end(n: Float) {
   property("inset-inline-end", "${n}px")
 }
 
-fun TailwindScope.top(n: Float) {
+fun InlineTailwindScope.top(n: Float) {
   property("top", "${n}px")
 }
 
-fun TailwindScope.right(n: Float) {
+fun InlineTailwindScope.right(n: Float) {
   property("right", "${n}px")
 }
 
-fun TailwindScope.bottom(n: Float) {
+fun InlineTailwindScope.bottom(n: Float) {
   property("bottom", "${n}px")
 }
 
-fun TailwindScope.left(n: Float) {
+fun InlineTailwindScope.left(n: Float) {
   property("left", "${n}px")
 }

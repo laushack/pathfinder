@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // BORDER COLOR (https://tailwindcss.com/docs/border-color)
 
-fun TailwindScope.borderInherit() {
+fun InlineTailwindScope.borderInherit() {
   property("border-color", "inherit")
 }
 
-fun TailwindScope.borderCurrent() {
+fun InlineTailwindScope.borderCurrent() {
   property("border-color", "currentColor")
 }
 
-fun TailwindScope.borderTransparent() {
+fun InlineTailwindScope.borderTransparent() {
   property("border-color", "transparent")
 }
 
-fun TailwindScope.borderColor(color: String) {
+fun InlineTailwindScope.borderColor(color: String) {
   property("border-color", color)
 }

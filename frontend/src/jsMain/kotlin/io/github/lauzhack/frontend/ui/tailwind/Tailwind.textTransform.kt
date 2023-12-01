@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // TEXT TRANSFORM (https://tailwindcss.com/docs/text-transform)
 
-fun TailwindScope.uppercase() {
+fun InlineTailwindScope.uppercase() {
   property("text-transform", "uppercase")
 }
 
-fun TailwindScope.lowercase() {
+fun InlineTailwindScope.lowercase() {
   property("text-transform", "lowercase")
 }
 
-fun TailwindScope.capitalize() {
+fun InlineTailwindScope.capitalize() {
   property("text-transform", "capitalize")
 }
 
-fun TailwindScope.normalCase() {
+fun InlineTailwindScope.normalCase() {
   property("text-transform", "none")
 }

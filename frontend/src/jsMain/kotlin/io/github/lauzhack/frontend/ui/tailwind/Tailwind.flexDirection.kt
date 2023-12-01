@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // FLEX DIRECTION (https://tailwindcss.com/docs/flex-direction)
 
-fun TailwindScope.flexRow() {
+fun InlineTailwindScope.flexRow() {
   property("flex-direction", "row")
 }
 
-fun TailwindScope.flexRowReverse() {
+fun InlineTailwindScope.flexRowReverse() {
   property("flex-direction", "row-reverse")
 }
 
-fun TailwindScope.flexCol() {
+fun InlineTailwindScope.flexCol() {
   property("flex-direction", "column")
 }
 
-fun TailwindScope.flexColReverse() {
+fun InlineTailwindScope.flexColReverse() {
   property("flex-direction", "column-reverse")
 }

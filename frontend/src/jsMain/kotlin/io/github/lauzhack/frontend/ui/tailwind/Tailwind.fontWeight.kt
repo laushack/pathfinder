@@ -2,38 +2,38 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // FONT WEIGHT (https://tailwindcss.com/docs/font-weight)
 
-fun TailwindScope.fontThin() {
+fun InlineTailwindScope.fontThin() {
   property("font-weight", "100")
 }
 
-fun TailwindScope.fontExtraLight() {
+fun InlineTailwindScope.fontExtraLight() {
   property("font-weight", "200")
 }
 
-fun TailwindScope.fontLight() {
+fun InlineTailwindScope.fontLight() {
   property("font-weight", "300")
 }
 
-fun TailwindScope.fontNormal() {
+fun InlineTailwindScope.fontNormal() {
   property("font-weight", "400")
 }
 
-fun TailwindScope.fontMedium() {
+fun InlineTailwindScope.fontMedium() {
   property("font-weight", "500")
 }
 
-fun TailwindScope.fontSemiBold() {
+fun InlineTailwindScope.fontSemiBold() {
   property("font-weight", "600")
 }
 
-fun TailwindScope.fontBold() {
+fun InlineTailwindScope.fontBold() {
   property("font-weight", "700")
 }
 
-fun TailwindScope.fontExtraBold() {
+fun InlineTailwindScope.fontExtraBold() {
   property("font-weight", "800")
 }
 
-fun TailwindScope.fontBlack() {
+fun InlineTailwindScope.fontBlack() {
   property("font-weight", "900")
 }

@@ -2,38 +2,38 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // BORDER RADIUS (https://tailwindcss.com/docs/border-radius)
 
-fun TailwindScope.roundedNone() {
+fun InlineTailwindScope.roundedNone() {
   property("border-radius", "0px")
 }
 
-fun TailwindScope.roundedSm() {
+fun InlineTailwindScope.roundedSm() {
   property("border-radius", "0.125rem")
 }
 
-fun TailwindScope.rounded() {
+fun InlineTailwindScope.rounded() {
   property("border-radius", "0.25rem")
 }
 
-fun TailwindScope.roundedMd() {
+fun InlineTailwindScope.roundedMd() {
   property("border-radius", "0.375rem")
 }
 
-fun TailwindScope.roundedLg() {
+fun InlineTailwindScope.roundedLg() {
   property("border-radius", "0.5rem")
 }
 
-fun TailwindScope.roundedXl() {
+fun InlineTailwindScope.roundedXl() {
   property("border-radius", "0.75rem")
 }
 
-fun TailwindScope.rounded2Xl() {
+fun InlineTailwindScope.rounded2Xl() {
   property("border-radius", "1rem")
 }
 
-fun TailwindScope.rounded3Xl() {
+fun InlineTailwindScope.rounded3Xl() {
   property("border-radius", "1.5rem")
 }
 
-fun TailwindScope.roundedFull() {
+fun InlineTailwindScope.roundedFull() {
   property("border-radius", "9999px")
 }

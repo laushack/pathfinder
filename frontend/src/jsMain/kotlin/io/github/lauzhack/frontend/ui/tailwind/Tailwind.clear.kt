@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // https://tailwindcss.com/docs/clear
 
-fun TailwindScope.clearLeft() {
+fun InlineTailwindScope.clearLeft() {
   property("clear", "left")
 }
 
-fun TailwindScope.clearRight() {
+fun InlineTailwindScope.clearRight() {
   property("clear", "right")
 }
 
-fun TailwindScope.clearBoth() {
+fun InlineTailwindScope.clearBoth() {
   property("clear", "both")
 }
 
-fun TailwindScope.clearNone() {
+fun InlineTailwindScope.clearNone() {
   property("clear", "none")
 }

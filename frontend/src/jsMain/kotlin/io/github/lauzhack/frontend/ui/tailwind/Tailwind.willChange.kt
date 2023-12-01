@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // WILL CHANGE (https://tailwindcss.com/docs/will-change)
 
-fun TailwindScope.willChangeAuto() {
+fun InlineTailwindScope.willChangeAuto() {
   property("will-change", "auto")
 }
 
-fun TailwindScope.willChangeScroll() {
+fun InlineTailwindScope.willChangeScroll() {
   property("will-change", "scroll-position")
 }
 
-fun TailwindScope.willChangeContents() {
+fun InlineTailwindScope.willChangeContents() {
   property("will-change", "contents")
 }
 
-fun TailwindScope.willChangeTransform() {
+fun InlineTailwindScope.willChangeTransform() {
   property("will-change", "transform")
 }

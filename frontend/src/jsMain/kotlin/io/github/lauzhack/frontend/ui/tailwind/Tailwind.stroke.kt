@@ -2,22 +2,22 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // STROKE (https://tailwindcss.com/docs/stroke)
 
-fun TailwindScope.strokeNone() {
+fun InlineTailwindScope.strokeNone() {
   property("stroke", "none")
 }
 
-fun TailwindScope.strokeInherit() {
+fun InlineTailwindScope.strokeInherit() {
   property("stroke", "inherit")
 }
 
-fun TailwindScope.strokeCurrent() {
+fun InlineTailwindScope.strokeCurrent() {
   property("stroke", "currentColor")
 }
 
-fun TailwindScope.strokeTransparent() {
+fun InlineTailwindScope.strokeTransparent() {
   property("stroke", "transparent")
 }
 
-fun TailwindScope.strokeColor(color: String) {
+fun InlineTailwindScope.strokeColor(color: String) {
   property("stroke", color)
 }

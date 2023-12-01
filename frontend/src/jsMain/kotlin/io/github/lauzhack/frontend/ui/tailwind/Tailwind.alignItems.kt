@@ -2,22 +2,22 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // ALIGN ITEMS (https://tailwindcss.com/docs/align-items)
 
-fun TailwindScope.itemsStart() {
+fun InlineTailwindScope.itemsStart() {
   property("align-items", "flex-start")
 }
 
-fun TailwindScope.itemsEnd() {
+fun InlineTailwindScope.itemsEnd() {
   property("align-items", "flex-end")
 }
 
-fun TailwindScope.itemsCenter() {
+fun InlineTailwindScope.itemsCenter() {
   property("align-items", "center")
 }
 
-fun TailwindScope.itemsBaseline() {
+fun InlineTailwindScope.itemsBaseline() {
   property("align-items", "baseline")
 }
 
-fun TailwindScope.itemsStretch() {
+fun InlineTailwindScope.itemsStretch() {
   property("align-items", "stretch")
 }

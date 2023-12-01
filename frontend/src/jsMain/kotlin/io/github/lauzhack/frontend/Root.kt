@@ -12,14 +12,17 @@ import org.w3c.dom.HTMLBodyElement
 @Composable
 fun DOMScope<HTMLBodyElement>.Root() {
   ProvideTailwindStyles {
-    val className = tailwind {
-      flex()
-      flexCol()
-      hScreen()
-      itemsCenter()
-      justifyCenter()
-    }
-    Div(attrs = { classes(className) }) {
+    Div(
+        attrs = {
+          inlineTailwind {
+            flex()
+            flexCol()
+            hScreen()
+            itemsCenter()
+            justifyCenter()
+          }
+        },
+    ) {
       val state = rememberJokeScreenState()
       JokeScreen(state = state)
     }

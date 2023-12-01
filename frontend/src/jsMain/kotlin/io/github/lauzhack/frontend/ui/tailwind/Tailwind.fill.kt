@@ -2,22 +2,22 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // FILL (https://tailwindcss.com/docs/fill)
 
-fun TailwindScope.fillNone() {
+fun InlineTailwindScope.fillNone() {
   property("fill", "none")
 }
 
-fun TailwindScope.fillInherit() {
+fun InlineTailwindScope.fillInherit() {
   property("fill", "inherit")
 }
 
-fun TailwindScope.fillCurrent() {
+fun InlineTailwindScope.fillCurrent() {
   property("fill", "currentColor")
 }
 
-fun TailwindScope.fillTransparent() {
+fun InlineTailwindScope.fillTransparent() {
   property("fill", "transparent")
 }
 
-fun TailwindScope.fillColor(color: String) {
+fun InlineTailwindScope.fillColor(color: String) {
   property("fill", color)
 }

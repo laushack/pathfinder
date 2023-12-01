@@ -2,34 +2,34 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // JUSTIFY CONTENT (https://tailwindcss.com/docs/justify-content)
 
-fun TailwindScope.justifyNormal() {
+fun InlineTailwindScope.justifyNormal() {
   property("justify-content", "normal")
 }
 
-fun TailwindScope.justifyStart() {
+fun InlineTailwindScope.justifyStart() {
   property("justify-content", "flex-start")
 }
 
-fun TailwindScope.justifyEnd() {
+fun InlineTailwindScope.justifyEnd() {
   property("justify-content", "flex-end")
 }
 
-fun TailwindScope.justifyCenter() {
+fun InlineTailwindScope.justifyCenter() {
   property("justify-content", "center")
 }
 
-fun TailwindScope.justifyBetween() {
+fun InlineTailwindScope.justifyBetween() {
   property("justify-content", "space-between")
 }
 
-fun TailwindScope.justifyAround() {
+fun InlineTailwindScope.justifyAround() {
   property("justify-content", "space-around")
 }
 
-fun TailwindScope.justifyEvenly() {
+fun InlineTailwindScope.justifyEvenly() {
   property("justify-content", "space-evenly")
 }
 
-fun TailwindScope.justifyStretch() {
+fun InlineTailwindScope.justifyStretch() {
   property("justify-content", "stretch")
 }

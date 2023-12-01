@@ -2,10 +2,10 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // https://tailwindcss.com/docs/isolation
 
-fun TailwindScope.isolate() {
+fun InlineTailwindScope.isolate() {
   property("isolation", "isolate")
 }
 
-fun TailwindScope.isolationAuto() {
+fun InlineTailwindScope.isolationAuto() {
   property("isolation", "auto")
 }

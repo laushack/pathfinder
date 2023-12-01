@@ -2,26 +2,26 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // TEXT ALIGN (https://tailwindcss.com/docs/text-align)
 
-fun TailwindScope.textLeft() {
+fun InlineTailwindScope.textLeft() {
   property("text-align", "left")
 }
 
-fun TailwindScope.textCenter() {
+fun InlineTailwindScope.textCenter() {
   property("text-align", "center")
 }
 
-fun TailwindScope.textRight() {
+fun InlineTailwindScope.textRight() {
   property("text-align", "right")
 }
 
-fun TailwindScope.textJustify() {
+fun InlineTailwindScope.textJustify() {
   property("text-align", "justify")
 }
 
-fun TailwindScope.textStart() {
+fun InlineTailwindScope.textStart() {
   property("text-align", "start")
 }
 
-fun TailwindScope.textEnd() {
+fun InlineTailwindScope.textEnd() {
   property("text-align", "end")
 }

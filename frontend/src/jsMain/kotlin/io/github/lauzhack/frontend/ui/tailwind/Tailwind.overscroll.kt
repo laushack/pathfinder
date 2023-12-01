@@ -2,38 +2,38 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // OVERSCROLL BEHAVIOR (https://tailwindcss.com/docs/overscroll-behavior)
 
-fun TailwindScope.overscrollAuto() {
+fun InlineTailwindScope.overscrollAuto() {
   property("overscroll-behavior", "auto")
 }
 
-fun TailwindScope.overscrollContain() {
+fun InlineTailwindScope.overscrollContain() {
   property("overscroll-behavior", "contain")
 }
 
-fun TailwindScope.overscrollNone() {
+fun InlineTailwindScope.overscrollNone() {
   property("overscroll-behavior", "none")
 }
 
-fun TailwindScope.overscrollYAuto() {
+fun InlineTailwindScope.overscrollYAuto() {
   property("overscroll-behavior-y", "auto")
 }
 
-fun TailwindScope.overscrollYContain() {
+fun InlineTailwindScope.overscrollYContain() {
   property("overscroll-behavior-y", "contain")
 }
 
-fun TailwindScope.overscrollYNone() {
+fun InlineTailwindScope.overscrollYNone() {
   property("overscroll-behavior-y", "none")
 }
 
-fun TailwindScope.overscrollXAuto() {
+fun InlineTailwindScope.overscrollXAuto() {
   property("overscroll-behavior-x", "auto")
 }
 
-fun TailwindScope.overscrollXContain() {
+fun InlineTailwindScope.overscrollXContain() {
   property("overscroll-behavior-x", "contain")
 }
 
-fun TailwindScope.overscrollXNone() {
+fun InlineTailwindScope.overscrollXNone() {
   property("overscroll-behavior-x", "none")
 }

@@ -2,94 +2,94 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // MAX-WIDTH (https://tailwindcss.com/docs/max-width)
 
-fun TailwindScope.maxW0() {
+fun InlineTailwindScope.maxW0() {
   property("max-width", "0px")
 }
 
-fun TailwindScope.maxWNone() {
+fun InlineTailwindScope.maxWNone() {
   property("max-width", "none")
 }
 
-fun TailwindScope.maxWXs() {
+fun InlineTailwindScope.maxWXs() {
   property("max-width", "20rem")
 }
 
-fun TailwindScope.maxWSm() {
+fun InlineTailwindScope.maxWSm() {
   property("max-width", "24rem")
 }
 
-fun TailwindScope.maxWMd() {
+fun InlineTailwindScope.maxWMd() {
   property("max-width", "28rem")
 }
 
-fun TailwindScope.maxWLg() {
+fun InlineTailwindScope.maxWLg() {
   property("max-width", "32rem")
 }
 
-fun TailwindScope.maxWXl() {
+fun InlineTailwindScope.maxWXl() {
   property("max-width", "36rem")
 }
 
-fun TailwindScope.maxW2Xl() {
+fun InlineTailwindScope.maxW2Xl() {
   property("max-width", "42rem")
 }
 
-fun TailwindScope.maxW3Xl() {
+fun InlineTailwindScope.maxW3Xl() {
   property("max-width", "48rem")
 }
 
-fun TailwindScope.maxW4Xl() {
+fun InlineTailwindScope.maxW4Xl() {
   property("max-width", "56rem")
 }
 
-fun TailwindScope.maxW5Xl() {
+fun InlineTailwindScope.maxW5Xl() {
   property("max-width", "64rem")
 }
 
-fun TailwindScope.maxW6Xl() {
+fun InlineTailwindScope.maxW6Xl() {
   property("max-width", "72rem")
 }
 
-fun TailwindScope.maxW7Xl() {
+fun InlineTailwindScope.maxW7Xl() {
   property("max-width", "80rem")
 }
 
-fun TailwindScope.maxWFull() {
+fun InlineTailwindScope.maxWFull() {
   property("max-width", "100%")
 }
 
-fun TailwindScope.maxWMin() {
+fun InlineTailwindScope.maxWMin() {
   property("max-width", "min-content")
 }
 
-fun TailwindScope.maxWMax() {
+fun InlineTailwindScope.maxWMax() {
   property("max-width", "max-content")
 }
 
-fun TailwindScope.maxWFit() {
+fun InlineTailwindScope.maxWFit() {
   property("max-width", "fit-content")
 }
 
-fun TailwindScope.maxWProse() {
+fun InlineTailwindScope.maxWProse() {
   property("max-width", "65ch")
 }
 
-fun TailwindScope.maxWScreenSm() {
+fun InlineTailwindScope.maxWScreenSm() {
   property("max-width", "640px")
 }
 
-fun TailwindScope.maxWScreenMd() {
+fun InlineTailwindScope.maxWScreenMd() {
   property("max-width", "768px")
 }
 
-fun TailwindScope.maxWScreenLg() {
+fun InlineTailwindScope.maxWScreenLg() {
   property("max-width", "1024px")
 }
 
-fun TailwindScope.maxWScreenXl() {
+fun InlineTailwindScope.maxWScreenXl() {
   property("max-width", "1280px")
 }
 
-fun TailwindScope.maxWScreen2Xl() {
+fun InlineTailwindScope.maxWScreen2Xl() {
   property("max-width", "1536px")
 }

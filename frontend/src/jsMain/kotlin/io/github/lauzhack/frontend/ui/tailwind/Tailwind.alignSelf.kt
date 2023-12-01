@@ -2,26 +2,26 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // ALIGN SELF (https://tailwindcss.com/docs/align-self)
 
-fun TailwindScope.selfAuto() {
+fun InlineTailwindScope.selfAuto() {
   property("align-self", "auto")
 }
 
-fun TailwindScope.selfStart() {
+fun InlineTailwindScope.selfStart() {
   property("align-self", "flex-start")
 }
 
-fun TailwindScope.selfEnd() {
+fun InlineTailwindScope.selfEnd() {
   property("align-self", "flex-end")
 }
 
-fun TailwindScope.selfCenter() {
+fun InlineTailwindScope.selfCenter() {
   property("align-self", "center")
 }
 
-fun TailwindScope.selfStretch() {
+fun InlineTailwindScope.selfStretch() {
   property("align-self", "stretch")
 }
 
-fun TailwindScope.selfBaseline() {
+fun InlineTailwindScope.selfBaseline() {
   property("align-self", "baseline")
 }

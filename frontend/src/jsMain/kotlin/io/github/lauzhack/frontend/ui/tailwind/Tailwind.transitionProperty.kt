@@ -2,17 +2,17 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // TRANSITION PROPERTY (https://tailwindcss.com/docs/transition-property)
 
-fun TailwindScope.transitionNone() {
+fun InlineTailwindScope.transitionNone() {
   property("transition-property", "none")
 }
 
-fun TailwindScope.transitionAll() {
+fun InlineTailwindScope.transitionAll() {
   property("transition-property", "all")
   property("transition-timing-function", "cubic-bezier(0.4, 0, 0.2, 1)")
   property("transition-duration", "150ms")
 }
 
-fun TailwindScope.transitionColors() {
+fun InlineTailwindScope.transitionColors() {
   property(
       "transition-property",
       "color, background-color, border-color, text-decoration-color, fill, stroke")
@@ -20,7 +20,7 @@ fun TailwindScope.transitionColors() {
   property("transition-duration", "150ms")
 }
 
-fun TailwindScope.transitionShadow() {
+fun InlineTailwindScope.transitionShadow() {
   property("transition-property", "box-shadow")
   property("transition-timing-function", "cubic-bezier(0.4, 0, 0.2, 1)")
   property("transition-duration", "150ms")

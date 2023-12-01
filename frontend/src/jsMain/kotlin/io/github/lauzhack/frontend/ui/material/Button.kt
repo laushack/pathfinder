@@ -53,14 +53,14 @@ private fun TailwindScope.buttonStyle() {
   appearanceNone()
 }
 
-private fun TailwindScope.buttonSmallLayoutStyle() {
+private fun InlineTailwindScope.buttonSmallLayoutStyle() {
   roundedLg()
   py(8f)
   px(8f)
   minW(48f)
 }
 
-private fun TailwindScope.buttonTextStyle() {
+private fun InlineTailwindScope.buttonTextStyle() {
   uppercase()
   fontSemiBold()
   fontSans()

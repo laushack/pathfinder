@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // ACCENT COLOR (https://tailwindcss.com/docs/accent-color)
 
-fun TailwindScope.accentInherit() {
+fun InlineTailwindScope.accentInherit() {
   property("accent-color", "inherit")
 }
 
-fun TailwindScope.accentCurrent() {
+fun InlineTailwindScope.accentCurrent() {
   property("accent-color", "currentColor")
 }
 
-fun TailwindScope.accentTransparent() {
+fun InlineTailwindScope.accentTransparent() {
   property("accent-color", "transparent")
 }
 
-fun TailwindScope.accentColor(color: String) {
+fun InlineTailwindScope.accentColor(color: String) {
   property("accent-color", color)
 }

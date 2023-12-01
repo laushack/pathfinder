@@ -26,26 +26,6 @@ fun JokeScreen(
     overflowClip()
     spaceY(8f)
   }
-  val imgClassName = tailwind {
-    aspectSquare()
-    wFull()
-  }
-  val titleClassName = tailwind {
-    h6()
-    mx(16f)
-  }
-  val subtitleClassName = tailwind {
-    subtitle1()
-    mx(16f)
-  }
-  val bodyClassName = tailwind {
-    body1()
-    mx(16f)
-  }
-  val buttonClassName = tailwind {
-    mx(8f)
-    mb(8f)
-  }
   Div(
       attrs = {
         attrs()
@@ -54,15 +34,50 @@ fun JokeScreen(
   ) {
     Img(
         src = "https://i1.sndcdn.com/artworks-000409999251-jsaqfk-t500x500.jpg",
-        attrs = { classes(imgClassName) },
+        attrs = {
+          inlineTailwind {
+            aspectSquare()
+            wFull()
+          }
+        },
     )
-    H1(attrs = { classes(titleClassName) }) { Text("Your favorite joke") }
-    H2(attrs = { classes(subtitleClassName) }) { Text("#${state.jokeId}") }
-    Span(attrs = { classes(bodyClassName) }) { Text(state.jokeText) }
+    H1(
+        attrs = {
+          inlineTailwind {
+            h6()
+            mx(16f)
+          }
+        },
+    ) {
+      Text("Your favorite joke")
+    }
+    H2(
+        attrs = {
+          inlineTailwind {
+            subtitle1()
+            mx(16f)
+          }
+        },
+    ) {
+      Text("#${state.jokeId}")
+    }
+    Span(
+        attrs = {
+          inlineTailwind {
+            body1()
+            mx(16f)
+          }
+        },
+    ) {
+      Text(state.jokeText)
+    }
     OutlinedButton(
         attrs = {
           onClick { state.onRefreshClick() }
-          classes(buttonClassName)
+          inlineTailwind {
+            mx(8f)
+            mb(8f)
+          }
         },
     ) {
       Text("Refresh")

@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // BACKGROUND COLOR (https://tailwindcss.com/docs/background-color)
 
-fun TailwindScope.bgColor(color: String) {
+fun InlineTailwindScope.bgColor(color: String) {
   property("background-color", color)
 }
 
-fun TailwindScope.bgInherit() {
+fun InlineTailwindScope.bgInherit() {
   property("background-color", "inherit")
 }
 
-fun TailwindScope.bgCurrent() {
+fun InlineTailwindScope.bgCurrent() {
   property("background-color", "currentColor")
 }
 
-fun TailwindScope.bgTransparent() {
+fun InlineTailwindScope.bgTransparent() {
   property("background-color", "transparent")
 }

@@ -2,14 +2,14 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // https://tailwindcss.com/docs/aspect-ratio
 
-fun TailwindScope.aspectAuto() {
+fun InlineTailwindScope.aspectAuto() {
   property("aspect-ratio", "auto")
 }
 
-fun TailwindScope.aspectSquare() {
+fun InlineTailwindScope.aspectSquare() {
   property("aspect-ratio", "square")
 }
 
-fun TailwindScope.aspectVideo() {
+fun InlineTailwindScope.aspectVideo() {
   property("aspect-ratio", "16/9")
 }

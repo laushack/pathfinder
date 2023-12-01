@@ -4,84 +4,84 @@ import io.github.lauzhack.frontend.ui.tailwind.*
 
 object Tokens {
 
-  fun TailwindScope.typeface() {
+  fun InlineTailwindScope.typeface() {
     fontSans()
   }
 
-  fun TailwindScope.h1() {
+  fun InlineTailwindScope.h1() {
     typeface()
     fontBold()
     textSizePxToRem(96f)
   }
 
-  fun TailwindScope.h2() {
+  fun InlineTailwindScope.h2() {
     typeface()
     fontBold()
     textSizePxToRem(60f)
   }
 
-  fun TailwindScope.h3() {
+  fun InlineTailwindScope.h3() {
     typeface()
     fontBold()
     textSizePxToRem(48f)
   }
 
-  fun TailwindScope.h4() {
+  fun InlineTailwindScope.h4() {
     typeface()
     fontBold()
     textSizePxToRem(34f)
   }
 
-  fun TailwindScope.h5() {
+  fun InlineTailwindScope.h5() {
     typeface()
     fontSemiBold()
     textSizePxToRem(24f)
   }
 
-  fun TailwindScope.h6() {
+  fun InlineTailwindScope.h6() {
     typeface()
     fontSemiBold()
     textSizePxToRem(20f)
   }
 
-  fun TailwindScope.subtitle1() {
+  fun InlineTailwindScope.subtitle1() {
     typeface()
     fontSemiBold()
     textSizePxToRem(16f)
   }
 
-  fun TailwindScope.subtitle2() {
+  fun InlineTailwindScope.subtitle2() {
     typeface()
     fontSemiBold()
     textSizePxToRem(14f)
   }
 
-  fun TailwindScope.body1() {
+  fun InlineTailwindScope.body1() {
     typeface()
     fontNormal()
     textSizePxToRem(16f)
   }
 
-  fun TailwindScope.body2() {
+  fun InlineTailwindScope.body2() {
     typeface()
     fontNormal()
     textSizePxToRem(14f)
   }
 
-  fun TailwindScope.button() {
+  fun InlineTailwindScope.button() {
     typeface()
     fontSemiBold()
     textSizePxToRem(14f)
     uppercase()
   }
 
-  fun TailwindScope.caption() {
+  fun InlineTailwindScope.caption() {
     typeface()
     fontNormal()
     textSizePxToRem(12f)
   }
 
-  fun TailwindScope.overline() {
+  fun InlineTailwindScope.overline() {
     typeface()
     fontNormal()
     textSizePxToRem(10f)

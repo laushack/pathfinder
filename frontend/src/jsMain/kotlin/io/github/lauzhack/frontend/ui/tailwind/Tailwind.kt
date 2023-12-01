@@ -2,6 +2,7 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 import androidx.compose.runtime.*
 import kotlin.random.Random
+import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.ContentBuilder
 import org.jetbrains.compose.web.dom.Style
@@ -50,6 +51,17 @@ fun tailwind(scope: TailwindScope.() -> Unit): String {
   return styles.properties(properties)
 }
 
+/**
+ * Applies the given TailwindCSS styles to the element. Some styles require composition to be
+ * active, in which case the [tailwind] function should be used instead. However, this function is
+ * more performant and convenient for styles that do not require composition to be active.
+ *
+ * @param scope The scope in which to define the CSS properties.
+ */
+fun <T : Element> AttrsScope<T>.inlineTailwind(scope: InlineTailwindScope.() -> Unit) {
+  style { InlineTailwindScope { name, value -> property(name, value) }.apply(scope) }
+}
+
 /** Create a [Styled] composable which applies the specified TailwindCSS styles to the element. */
 @Composable
 fun <T : Element> Styled(
@@ -68,8 +80,8 @@ fun <T : Element> Styled(
   )
 }
 
-/** A scope for defining CSS properties. */
-interface TailwindScope {
+/** A scope for defining properties in an inline fashion. */
+fun interface InlineTailwindScope {
 
   /**
    * Defines a CSS property.
@@ -78,6 +90,10 @@ interface TailwindScope {
    * @param value The value of the property.
    */
   fun property(name: String, value: String)
+}
+
+/** A scope for defining CSS properties. */
+interface TailwindScope : InlineTailwindScope {
 
   /**
    * Uses the specified selector to define CSS properties.

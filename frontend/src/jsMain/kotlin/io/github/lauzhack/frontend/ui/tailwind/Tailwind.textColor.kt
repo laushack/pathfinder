@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // TEXT COLOR (https://tailwindcss.com/docs/text-color)
 
-fun TailwindScope.textColor(color: String) {
+fun InlineTailwindScope.textColor(color: String) {
   property("color", color)
 }
 
-fun TailwindScope.textInherit() {
+fun InlineTailwindScope.textInherit() {
   property("color", "inherit")
 }
 
-fun TailwindScope.textCurrent() {
+fun InlineTailwindScope.textCurrent() {
   property("color", "currentColor")
 }
 
-fun TailwindScope.textTransparent() {
+fun InlineTailwindScope.textTransparent() {
   property("color", "transparent")
 }

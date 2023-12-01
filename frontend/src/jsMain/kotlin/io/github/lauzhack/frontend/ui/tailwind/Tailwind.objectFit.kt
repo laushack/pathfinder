@@ -2,22 +2,22 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // OBJECT FIT (https://tailwindcss.com/docs/object-fit)
 
-fun TailwindScope.objectContain() {
+fun InlineTailwindScope.objectContain() {
   property("object-fit", "contain")
 }
 
-fun TailwindScope.objectCover() {
+fun InlineTailwindScope.objectCover() {
   property("object-fit", "cover")
 }
 
-fun TailwindScope.objectFill() {
+fun InlineTailwindScope.objectFill() {
   property("object-fit", "fill")
 }
 
-fun TailwindScope.objectNone() {
+fun InlineTailwindScope.objectNone() {
   property("object-fit", "none")
 }
 
-fun TailwindScope.objectScaleDown() {
+fun InlineTailwindScope.objectScaleDown() {
   property("object-fit", "scale-down")
 }

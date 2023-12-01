@@ -2,14 +2,14 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // FLEX WRAP (https://tailwindcss.com/docs/flex-wrap)
 
-fun TailwindScope.flexWrap() {
+fun InlineTailwindScope.flexWrap() {
   property("flex-wrap", "wrap")
 }
 
-fun TailwindScope.flexWrapReverse() {
+fun InlineTailwindScope.flexWrapReverse() {
   property("flex-wrap", "wrap-reverse")
 }
 
-fun TailwindScope.flexNoWrap() {
+fun InlineTailwindScope.flexNoWrap() {
   property("flex-wrap", "nowrap")
 }

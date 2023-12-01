@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // SCROLL SNAP TYPE (https://tailwindcss.com/docs/scroll-snap-type)
 
-fun TailwindScope.snapNone() {
+fun InlineTailwindScope.snapNone() {
   property("scroll-snap-type", "none")
 }
 
-fun TailwindScope.snapX() {
+fun InlineTailwindScope.snapX() {
   property("scroll-snap-type", "x mandatory")
 }
 
-fun TailwindScope.snapY() {
+fun InlineTailwindScope.snapY() {
   property("scroll-snap-type", "y mandatory")
 }
 
-fun TailwindScope.snapBoth() {
+fun InlineTailwindScope.snapBoth() {
   property("scroll-snap-type", "both mandatory")
 }

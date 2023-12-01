@@ -2,34 +2,34 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // BACKDROP BLUR (https://tailwindcss.com/docs/backdrop-blur)
 
-fun TailwindScope.backdropBlurNone() {
+fun InlineTailwindScope.backdropBlurNone() {
   property("backdrop-filter", "blur(0)")
 }
 
-fun TailwindScope.backdropBlurSm() {
+fun InlineTailwindScope.backdropBlurSm() {
   property("backdrop-filter", "blur(4px)")
 }
 
-fun TailwindScope.backdropBlur() {
+fun InlineTailwindScope.backdropBlur() {
   property("backdrop-filter", "blur(8px)")
 }
 
-fun TailwindScope.backdropBlurMd() {
+fun InlineTailwindScope.backdropBlurMd() {
   property("backdrop-filter", "blur(12px)")
 }
 
-fun TailwindScope.backdropBlurLg() {
+fun InlineTailwindScope.backdropBlurLg() {
   property("backdrop-filter", "blur(16px)")
 }
 
-fun TailwindScope.backdropBlurXl() {
+fun InlineTailwindScope.backdropBlurXl() {
   property("backdrop-filter", "blur(24px)")
 }
 
-fun TailwindScope.backdropBlur2Xl() {
+fun InlineTailwindScope.backdropBlur2Xl() {
   property("backdrop-filter", "blur(40px)")
 }
 
-fun TailwindScope.backdropBlur3Xl() {
+fun InlineTailwindScope.backdropBlur3Xl() {
   property("backdrop-filter", "blur(64px)")
 }

@@ -2,14 +2,14 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // VISIBILITY (https://tailwindcss.com/docs/visibility)
 
-fun TailwindScope.visible() {
+fun InlineTailwindScope.visible() {
   property("visibility", "visible")
 }
 
-fun TailwindScope.invisible() {
+fun InlineTailwindScope.invisible() {
   property("visibility", "hidden")
 }
 
-fun TailwindScope.collapse() {
+fun InlineTailwindScope.collapse() {
   property("visibility", "collapse")
 }

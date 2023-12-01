@@ -2,22 +2,22 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // POSITION (https://tailwindcss.com/docs/position)
 
-fun TailwindScope.static() {
+fun InlineTailwindScope.static() {
   property("position", "static")
 }
 
-fun TailwindScope.fixed() {
+fun InlineTailwindScope.fixed() {
   property("position", "fixed")
 }
 
-fun TailwindScope.absolute() {
+fun InlineTailwindScope.absolute() {
   property("position", "absolute")
 }
 
-fun TailwindScope.relative() {
+fun InlineTailwindScope.relative() {
   property("position", "relative")
 }
 
-fun TailwindScope.sticky() {
+fun InlineTailwindScope.sticky() {
   property("position", "sticky")
 }

@@ -2,38 +2,38 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // OBJECT POSITION (https://tailwindcss.com/docs/object-position)
 
-fun TailwindScope.objectBottom() {
+fun InlineTailwindScope.objectBottom() {
   property("object-position", "bottom")
 }
 
-fun TailwindScope.objectCenter() {
+fun InlineTailwindScope.objectCenter() {
   property("object-position", "center")
 }
 
-fun TailwindScope.objectLeft() {
+fun InlineTailwindScope.objectLeft() {
   property("object-position", "left")
 }
 
-fun TailwindScope.objectLeftBottom() {
+fun InlineTailwindScope.objectLeftBottom() {
   property("object-position", "left bottom")
 }
 
-fun TailwindScope.objectLeftTop() {
+fun InlineTailwindScope.objectLeftTop() {
   property("object-position", "left top")
 }
 
-fun TailwindScope.objectRight() {
+fun InlineTailwindScope.objectRight() {
   property("object-position", "right")
 }
 
-fun TailwindScope.objectRightBottom() {
+fun InlineTailwindScope.objectRightBottom() {
   property("object-position", "right bottom")
 }
 
-fun TailwindScope.objectRightTop() {
+fun InlineTailwindScope.objectRightTop() {
   property("object-position", "right top")
 }
 
-fun TailwindScope.objectTop() {
+fun InlineTailwindScope.objectTop() {
   property("object-position", "top")
 }

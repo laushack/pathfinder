@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // CARET COLOR (https://tailwindcss.com/docs/caret-color)
 
-fun TailwindScope.caretInherit() {
+fun InlineTailwindScope.caretInherit() {
   property("caret-color", "inherit")
 }
 
-fun TailwindScope.caretCurrent() {
+fun InlineTailwindScope.caretCurrent() {
   property("caret-color", "currentColor")
 }
 
-fun TailwindScope.caretTransparent() {
+fun InlineTailwindScope.caretTransparent() {
   property("caret-color", "transparent")
 }
 
-fun TailwindScope.caretColor(color: String) {
+fun InlineTailwindScope.caretColor(color: String) {
   property("caret-color", color)
 }

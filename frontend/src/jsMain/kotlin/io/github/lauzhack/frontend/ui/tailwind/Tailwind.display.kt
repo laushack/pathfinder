@@ -2,82 +2,82 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // https://tailwindcss.com/docs/display
 
-fun TailwindScope.block() {
+fun InlineTailwindScope.block() {
   property("display", "block")
 }
 
-fun TailwindScope.inlineBlock() {
+fun InlineTailwindScope.inlineBlock() {
   property("display", "inline-block")
 }
 
-fun TailwindScope.inline() {
+fun InlineTailwindScope.inline() {
   property("display", "inline")
 }
 
-fun TailwindScope.flex() {
+fun InlineTailwindScope.flex() {
   property("display", "flex")
 }
 
-fun TailwindScope.inlineFlex() {
+fun InlineTailwindScope.inlineFlex() {
   property("display", "inline-flex")
 }
 
-fun TailwindScope.table() {
+fun InlineTailwindScope.table() {
   property("display", "table")
 }
 
-fun TailwindScope.tableCaption() {
+fun InlineTailwindScope.tableCaption() {
   property("display", "table-caption")
 }
 
-fun TailwindScope.tableCell() {
+fun InlineTailwindScope.tableCell() {
   property("display", "table-cell")
 }
 
-fun TailwindScope.tableColumn() {
+fun InlineTailwindScope.tableColumn() {
   property("display", "table-column")
 }
 
-fun TailwindScope.tableColumnGroup() {
+fun InlineTailwindScope.tableColumnGroup() {
   property("display", "table-column-group")
 }
 
-fun TailwindScope.tableFooterGroup() {
+fun InlineTailwindScope.tableFooterGroup() {
   property("display", "table-footer-group")
 }
 
-fun TailwindScope.tableHeaderGroup() {
+fun InlineTailwindScope.tableHeaderGroup() {
   property("display", "table-header-group")
 }
 
-fun TailwindScope.tableRowGroup() {
+fun InlineTailwindScope.tableRowGroup() {
   property("display", "table-row-group")
 }
 
-fun TailwindScope.tableRow() {
+fun InlineTailwindScope.tableRow() {
   property("display", "table-row")
 }
 
-fun TailwindScope.flowRoot() {
+fun InlineTailwindScope.flowRoot() {
   property("display", "flow-root")
 }
 
-fun TailwindScope.grid() {
+fun InlineTailwindScope.grid() {
   property("display", "grid")
 }
 
-fun TailwindScope.inlineGrid() {
+fun InlineTailwindScope.inlineGrid() {
   property("display", "inline-grid")
 }
 
-fun TailwindScope.contents() {
+fun InlineTailwindScope.contents() {
   property("display", "contents")
 }
 
-fun TailwindScope.listItem() {
+fun InlineTailwindScope.listItem() {
   property("display", "list-item")
 }
 
-fun TailwindScope.hidden() {
+fun InlineTailwindScope.hidden() {
   property("display", "none")
 }

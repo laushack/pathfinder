@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // USER SELECT (https://tailwindcss.com/docs/user-select)
 
-fun TailwindScope.selectNone() {
+fun InlineTailwindScope.selectNone() {
   property("user-select", "none")
 }
 
-fun TailwindScope.selectText() {
+fun InlineTailwindScope.selectText() {
   property("user-select", "text")
 }
 
-fun TailwindScope.selectAll() {
+fun InlineTailwindScope.selectAll() {
   property("user-select", "all")
 }
 
-fun TailwindScope.selectAuto() {
+fun InlineTailwindScope.selectAuto() {
   property("user-select", "auto")
 }

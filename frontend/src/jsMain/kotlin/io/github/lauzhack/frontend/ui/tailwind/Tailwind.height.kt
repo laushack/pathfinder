@@ -2,26 +2,26 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // HEIGHT (https://tailwindcss.com/docs/height)
 
-fun TailwindScope.h(n: Float) {
+fun InlineTailwindScope.h(n: Float) {
   property("height", "${n}px")
 }
 
-fun TailwindScope.hFull() {
+fun InlineTailwindScope.hFull() {
   property("height", "100%")
 }
 
-fun TailwindScope.hScreen() {
+fun InlineTailwindScope.hScreen() {
   property("height", "100vh")
 }
 
-fun TailwindScope.hMin() {
+fun InlineTailwindScope.hMin() {
   property("height", "min-content")
 }
 
-fun TailwindScope.hMax() {
+fun InlineTailwindScope.hMax() {
   property("height", "max-content")
 }
 
-fun TailwindScope.hFit() {
+fun InlineTailwindScope.hFit() {
   property("height", "fit-content")
 }

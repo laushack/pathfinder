@@ -2,38 +2,38 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // CURSOR (https://tailwindcss.com/docs/cursor)
 
-fun TailwindScope.cursorAuto() {
+fun InlineTailwindScope.cursorAuto() {
   property("cursor", "auto")
 }
 
-fun TailwindScope.cursorDefault() {
+fun InlineTailwindScope.cursorDefault() {
   property("cursor", "default")
 }
 
-fun TailwindScope.cursorPointer() {
+fun InlineTailwindScope.cursorPointer() {
   property("cursor", "pointer")
 }
 
-fun TailwindScope.cursorWait() {
+fun InlineTailwindScope.cursorWait() {
   property("cursor", "wait")
 }
 
-fun TailwindScope.cursorText() {
+fun InlineTailwindScope.cursorText() {
   property("cursor", "text")
 }
 
-fun TailwindScope.cursorMove() {
+fun InlineTailwindScope.cursorMove() {
   property("cursor", "move")
 }
 
-fun TailwindScope.cursorHelp() {
+fun InlineTailwindScope.cursorHelp() {
   property("cursor", "help")
 }
 
-fun TailwindScope.cursorNotAllowed() {
+fun InlineTailwindScope.cursorNotAllowed() {
   property("cursor", "not-allowed")
 }
 
-fun TailwindScope.cursorNone() {
+fun InlineTailwindScope.cursorNone() {
   property("cursor", "none")
 }

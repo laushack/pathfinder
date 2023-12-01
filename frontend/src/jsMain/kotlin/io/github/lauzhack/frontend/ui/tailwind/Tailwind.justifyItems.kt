@@ -2,18 +2,18 @@ package io.github.lauzhack.frontend.ui.tailwind
 
 // JUSTIFY ITEMS (https://tailwindcss.com/docs/justify-items)
 
-fun TailwindScope.justifyItemsStart() {
+fun InlineTailwindScope.justifyItemsStart() {
   property("justify-items", "start")
 }
 
-fun TailwindScope.justifyItemsEnd() {
+fun InlineTailwindScope.justifyItemsEnd() {
   property("justify-items", "end")
 }
 
-fun TailwindScope.justifyItemsCenter() {
+fun InlineTailwindScope.justifyItemsCenter() {
   property("justify-items", "center")
 }
 
-fun TailwindScope.justifyItemsStretch() {
+fun InlineTailwindScope.justifyItemsStretch() {
   property("justify-items", "stretch")
 }
