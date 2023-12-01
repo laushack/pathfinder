@@ -3,6 +3,9 @@ package io.github.lauzhack.frontend.jokes
 /** The state of the joke screen. */
 interface JokeScreenState {
 
+  /** The id of the joke to be displayed. */
+  val jokeId: String
+
   /** The text of the joke to be displayed. */
   val jokeText: String
 

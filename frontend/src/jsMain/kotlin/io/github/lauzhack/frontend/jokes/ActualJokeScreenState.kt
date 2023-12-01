@@ -33,6 +33,9 @@ private class ActualJokeScreenState(private val scope: CoroutineScope) : JokeScr
     }
   }
 
+  override var jokeId: String by mutableStateOf("0")
+    private set
+
   override var jokeText: String by mutableStateOf("Loading...")
     private set
 
@@ -45,6 +48,7 @@ private class ActualJokeScreenState(private val scope: CoroutineScope) : JokeScr
       httpClient.webSocket("/live") {
         while (true) {
           val joke = receiveDeserialized<DadJoke>()
+          jokeId = joke.id
           jokeText = joke.joke
         }
       }
