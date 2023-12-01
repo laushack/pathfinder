@@ -1,11 +1,12 @@
 package io.github.lauzhack.frontend.jokes
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import io.github.lauzhack.frontend.ui.Tokens.body1
 import io.github.lauzhack.frontend.ui.Tokens.h6
 import io.github.lauzhack.frontend.ui.Tokens.subtitle1
 import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.material.OutlinedButton
+import io.github.lauzhack.frontend.ui.material.Switch
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLDivElement
@@ -71,6 +72,8 @@ fun JokeScreen(
     ) {
       Text(state.jokeText)
     }
+    var checked by remember { mutableStateOf(false) }
+    Switch(checked, attrs = { onClick { checked = !checked } })
     OutlinedButton(
         attrs = {
           onClick { state.onRefreshClick() }

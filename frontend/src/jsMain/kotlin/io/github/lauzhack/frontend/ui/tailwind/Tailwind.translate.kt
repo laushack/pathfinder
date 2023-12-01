@@ -9,3 +9,7 @@ fun InlineTailwindScope.translateX(n: Float) {
 fun InlineTailwindScope.translateY(n: Float) {
   property("transform", "translateY(${n}px)")
 }
+
+fun InlineTailwindScope.translateXY(x: Float, y: Float) {
+  property("transform", "translate(${x}px, ${y}px)")
+}

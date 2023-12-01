@@ -6,10 +6,10 @@ fun InlineTailwindScope.transitionNone() {
   property("transition-property", "none")
 }
 
-fun InlineTailwindScope.transitionAll() {
+fun InlineTailwindScope.transitionAll(duration: Int = 150) {
   property("transition-property", "all")
   property("transition-timing-function", "cubic-bezier(0.4, 0, 0.2, 1)")
-  property("transition-duration", "150ms")
+  property("transition-duration", "${duration}ms")
 }
 
 fun InlineTailwindScope.transitionColors() {
