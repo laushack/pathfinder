@@ -80,17 +80,27 @@ interface TailwindScope {
   fun property(name: String, value: String)
 
   /**
+   * Uses the specified selector to define CSS properties.
+   *
+   * @param name The name of the selector.
+   * @param scope The scope for which to define the CSS properties.
+   */
+  fun selector(name: String, scope: TailwindScope.() -> Unit)
+
+  /**
    * Uses the specified pseudo-class to define CSS properties.
    *
    * @param name The name of the pseudo-class.
    * @param scope The scope for which to define the CSS properties.
    */
-  fun pseudoClass(name: String, scope: TailwindScope.() -> Unit) {}
+  fun pseudoClass(name: String, scope: TailwindScope.() -> Unit) {
+    return selector(":$name", scope)
+  }
 }
 
 /** A single property in TailwindCSS. */
 data class TailwindProperty(
-    val classes: Set<String>,
+    val selectors: List<String>,
     val name: String,
     val value: String,
 )
@@ -102,16 +112,16 @@ data class TailwindProperties(
 
 /** A scope which records CSS properties that are applied to the element. */
 private class RecordingTailwindScope(
-    private val classes: Set<String> = emptySet(),
+    private val selectors: List<String> = emptyList(),
     private val properties: MutableSet<TailwindProperty> = mutableSetOf(),
 ) : TailwindScope {
 
   override fun property(name: String, value: String) {
-    properties.add(TailwindProperty(classes, name, value))
+    properties.add(TailwindProperty(selectors, name, value))
   }
 
-  override fun pseudoClass(name: String, scope: TailwindScope.() -> Unit) {
-    RecordingTailwindScope(classes + name, properties).scope()
+  override fun selector(name: String, scope: TailwindScope.() -> Unit) {
+    RecordingTailwindScope(selectors + name, properties).scope()
   }
 }
 
@@ -134,9 +144,9 @@ private class TailwindStylesImpl : TailwindStyles {
   override fun StyleSheet() {
     Style {
       all.forEach { (name, properties) ->
-        val grouped = properties.properties.groupBy { it.classes }
+        val grouped = properties.properties.groupBy { it.selectors }
         for ((classes, props) in grouped) {
-          val pseudoClasses = classes.map { type(":$it") }
+          val pseudoClasses = classes.map(::type)
           val selector = combine(className(name), *pseudoClasses.toTypedArray())
           style(selector) { props.forEach { (_, name, value) -> property(name, value) } }
         }

@@ -24,26 +24,23 @@ fun JokeScreen(
     roundedLg()
     maxWSm()
     overflowClip()
+    spaceY(8f)
   }
   val imgClassName = tailwind {
     aspectSquare()
     wFull()
-    mb(8f)
   }
   val titleClassName = tailwind {
     h6()
     mx(16f)
-    mb(8f)
   }
   val subtitleClassName = tailwind {
     subtitle1()
     mx(16f)
-    mb(8f)
   }
   val bodyClassName = tailwind {
     body1()
     mx(16f)
-    mb(8f)
   }
   val buttonClassName = tailwind {
     mx(8f)
