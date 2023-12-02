@@ -30,6 +30,7 @@ class Algorithm(private val schedule: Schedule) {
 
       val neighbors = getNeighbors(current)
       for (neighbor in neighbors) {
+        //        println(neighbor)
         if (!visited.containsKey(neighbor.id) || neighbor.time < visited[neighbor.id]!!.first) {
           visited[neighbor.id] = Pair(neighbor.time, current)
           priorityList.add(neighbor)
@@ -39,12 +40,12 @@ class Algorithm(private val schedule: Schedule) {
 
     visited[end]?.let {
       val path = mutableListOf<Node>()
-      var current = Node(end, it.first, "") // TODO: correct tripID
+      var current = Node(end, it.first, it.second.tripID)
       while (current.id != start.id) {
         path.add(current)
         current = visited[current.id]!!.second
       }
-      path.add(start)
+      path.add(start) // TODO: not add regular start but the one of the train
       path.reverse()
       return path
     } ?: return null
@@ -57,24 +58,24 @@ class Algorithm(private val schedule: Schedule) {
 
 data class Node(val id: NodeID, val time: Time, val tripID: String)
 
-class Schedule(private val map: Map<NodeID, List<Node>>) {
+class Schedule(private val map: Map<NodeID, List<Pair<Time, Node>>>) {
 
   companion object {
-    private val data = Resources.StopTimesTrain.data()
+    private val data = Resources.StopTimes.data()
 
     fun build(): Schedule {
       val m =
           data
               .groupBy(
-                  { it[Resources.StopTimesTrain.TripId] },
+                  { it[Resources.StopTimes.TripId] },
                   {
                     try {
                       Pair(
-                          it[Resources.StopTimesTrain.StopSequence].toInt(),
+                          it[Resources.StopTimes.StopSequence].toInt(),
                           Node(
-                              it[Resources.StopTimesTrain.StopId].split(":")[0].toInt(),
-                              timeToMinutes(it[Resources.StopTimesTrain.DepartureTime]),
-                              it[Resources.StopTimesTrain.TripId]))
+                              it[Resources.StopTimes.StopId].split(":")[0].toInt(),
+                              timeToMinutes(it[Resources.StopTimes.DepartureTime]),
+                              it[Resources.StopTimes.TripId]))
                     } catch (e: NumberFormatException) {
                       null
                     }
@@ -85,7 +86,7 @@ class Schedule(private val map: Map<NodeID, List<Node>>) {
                 val list = it.value.filterNotNull().sortedBy { i -> i.first }.map { i -> i.second }
                 val noLast = list.subList(0, list.size - 1).withIndex()
                 // map all nodes to their neighbor
-                noLast.map { n -> Pair(n.value.id, list[n.index + 1]) }
+                noLast.map { n -> Pair(n.value.id, Pair(n.value.time, list[n.index + 1])) }
               }
               .groupBy({ it.first }, { it.second })
 
@@ -94,7 +95,10 @@ class Schedule(private val map: Map<NodeID, List<Node>>) {
   }
 
   fun getDepartures(node: Node, from: Time): Set<Node> {
-    return map[node.id]?.filter { from <= it.time && it.time <= from + 60 }?.toSet() ?: emptySet()
+    return map[node.id]
+        ?.filter { from <= it.first && it.first <= from + 60 }
+        ?.map { it.second }
+        ?.toSet() ?: emptySet()
   }
 }
 
