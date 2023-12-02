@@ -10,13 +10,12 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 /** The API key for the OpenAI API. */
 private val OpenAIApiKey =
     System.getenv("OPENAI_API_KEY") ?: error("OPENAI_API_KEY environment variable not set")
 
+/** Creates an HTTP client for the OpenAI API. */
 private fun httpClient(key: String) =
     HttpClient(CIO) {
       defaultRequest {
@@ -29,9 +28,11 @@ private fun httpClient(key: String) =
       install(Auth) { bearer { loadTokens { BearerTokens(key, key) } } }
     }
 
+/** A service for the OpenAI API. */
 class OpenAIService(apiKey: String = OpenAIApiKey) {
   private val client = httpClient(apiKey)
 
+  /** Sends a prompt to the OpenAI API and returns the response. */
   suspend fun prompt(request: OpenAIRequest): OpenAIResponse {
     val response =
         client.post("/v1/chat/completions") {
@@ -41,40 +42,3 @@ class OpenAIService(apiKey: String = OpenAIApiKey) {
     return response.body()
   }
 }
-
-@Serializable
-data class OpenAIRequest(
-    @SerialName("model") val model: String = "gpt-3.5-turbo",
-    @SerialName("messages") val messages: List<OpenAIMessage>,
-)
-
-@Serializable
-data class OpenAIResponse(
-    @SerialName("id") val id: String,
-    @SerialName("object") val obj: String,
-    @SerialName("created") val created: Long,
-    @SerialName("model") val model: String,
-    @SerialName("choices") val choices: List<OpenAIChoice>,
-    @SerialName("usage") val usage: OpenAIUsage,
-    @SerialName("system_fingerprint") val systemFingerprint: String?,
-)
-
-@Serializable
-data class OpenAIChoice(
-    @SerialName("index") val index: Int,
-    @SerialName("message") val message: OpenAIMessage,
-    @SerialName("finish_reason") val finishReason: String,
-)
-
-@Serializable
-data class OpenAIMessage(
-    @SerialName("role") val role: String,
-    @SerialName("content") val content: String,
-)
-
-@Serializable
-data class OpenAIUsage(
-    @SerialName("prompt_tokens") val promptTokens: Int,
-    @SerialName("completion_tokens") val completionTokens: Int,
-    @SerialName("total_tokens") val totalTokens: Int,
-)
