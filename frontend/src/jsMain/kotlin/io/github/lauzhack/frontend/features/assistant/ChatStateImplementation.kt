@@ -83,6 +83,7 @@ private class ChatStateImplementation(scope: CoroutineScope) : ChatState {
                       },
                   )
                 }
+                is AssistantToUserSetPlanning -> {}
               }
             }
           }

@@ -24,8 +24,8 @@ object Resources {
           .readText()
 
   object Prompt {
-    val QueryPrompt = loadText("QueryPrompt.prompt")
-    val UserPrompt = loadText("UserPrompt.prompt")
+    val QueryPrompt = loadText("GenerateQuestionForMissingJson.prompt")
+    val UserPrompt = loadText("ExtractJsonFromUserMessage.prompt")
   }
 
   /** Contains the data from the `agency.txt` file. */

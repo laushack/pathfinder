@@ -4,18 +4,18 @@ import io.github.lauzhack.backend.api.openAI.OpenAIMessage
 import io.github.lauzhack.backend.api.openAI.OpenAIRequest
 import io.github.lauzhack.backend.api.openAI.OpenAIService
 import io.github.lauzhack.backend.data.Resources
-import io.github.lauzhack.common.QueryParameters
 import io.github.lauzhack.common.api.*
 import io.github.lauzhack.common.api.AssistantRole.Assistant
 import io.github.lauzhack.common.api.AssistantRole.User
+import io.github.lauzhack.common.api.PlanningOptions
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
     private val openAIService: OpenAIService,
 ) {
 
+  private var currentPlanning = PlanningOptions()
   private val conversation = mutableListOf<OpenAIMessage>()
 
   private fun printConversation() {
@@ -49,25 +49,21 @@ class Session(
           val first = choices.first().message
           val json = first.content
 
-          val queryParameters: QueryParameters? =
+          val queryParameters: PlanningOptions? =
               try {
-                val current =
-                    Json {
-                          isLenient = true
-                          ignoreUnknownKeys = true
-                        }
-                        .decodeFromString(QueryParameters.serializer(), json)
-                println(current)
-                current
+                val extracted =
+                    DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
+                println(extracted)
+                currentPlanning = currentPlanning.updatedWith(extracted)
+                currentPlanning
               } catch (e: Exception) {
                 println("Error: $e")
                 null // Explicitly return null in case of an exception
               }
 
           val currentJson =
-              queryParameters?.let {
-                Json { this.prettyPrint = true }.encodeToString<QueryParameters>(it)
-              } ?: "{}"
+              queryParameters?.let { DefaultJsonSerializer.encodeToString<PlanningOptions>(it) }
+                  ?: "{}"
 
           val prompt = askForResponsePrompt.replace("\$INJECT_CURRENT_JSON\$", currentJson)
           val response2 =
@@ -100,6 +96,7 @@ class Session(
           printConversation()
         }
       }
+      is UserToAssistantSetPlanning -> currentPlanning = message.planningOptions
     }
   }
 }
