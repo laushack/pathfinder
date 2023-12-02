@@ -8,6 +8,10 @@ fun TailwindScope.hover(
     scope: TailwindScope.() -> Unit,
 ) = pseudoClass("hover", scope)
 
+fun TailwindScope.focus(
+    scope: TailwindScope.() -> Unit,
+) = pseudoClass("focus", scope)
+
 fun TailwindScope.children(
     scope: TailwindScope.() -> Unit,
 ) = selector(">*+*", scope)
