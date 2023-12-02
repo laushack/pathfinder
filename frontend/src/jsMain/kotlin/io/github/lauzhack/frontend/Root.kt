@@ -1,6 +1,7 @@
 package io.github.lauzhack.frontend
 
 import androidx.compose.runtime.*
+import io.github.lauzhack.frontend.api.backend.ProvideBackendService
 import io.github.lauzhack.frontend.features.assistant.ChatFloatingWindow
 import io.github.lauzhack.frontend.features.assistant.rememberChatState
 import io.github.lauzhack.frontend.ui.Tokens.cffPinkVeryLight
@@ -13,19 +14,21 @@ import org.w3c.dom.HTMLBodyElement
 @Composable
 fun DOMScope<HTMLBodyElement>.Root() {
   ProvideTailwindStyles {
-    Div(
-        attrs = {
-          inlineTailwind {
-            bgColor(cffPinkVeryLight)
-            flex()
-            flexCol()
-            hScreen()
-            px(32f)
-            py(16f)
-          }
-        },
-    ) {
-      ChatFloatingWindow(rememberChatState())
+    ProvideBackendService {
+      Div(
+          attrs = {
+            inlineTailwind {
+              bgColor(cffPinkVeryLight)
+              flex()
+              flexCol()
+              hScreen()
+              px(32f)
+              py(16f)
+            }
+          },
+      ) {
+        ChatFloatingWindow(rememberChatState())
+      }
     }
   }
 }
