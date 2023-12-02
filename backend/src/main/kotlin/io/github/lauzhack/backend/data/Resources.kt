@@ -30,8 +30,8 @@ object Resources {
           .readText()
 
   object Prompt {
-    val QueryPrompt = loadText("GenerateQuestionForMissingJson.prompt")
-    val UserPrompt = loadText("ExtractJsonFromUserMessage.prompt")
+    val GenerateQuestionForMissingJsonPrompt = loadText("GenerateQuestionForMissingJson.prompt")
+    val ExtractJsonFromUserMessagePrompt = loadText("ExtractJsonFromUserMessage.prompt")
   }
 
 
