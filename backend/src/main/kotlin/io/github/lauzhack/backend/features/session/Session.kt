@@ -6,6 +6,7 @@ import io.github.lauzhack.backend.api.openAI.OpenAIResponse
 import io.github.lauzhack.backend.api.openAI.OpenAIService
 import io.github.lauzhack.backend.data.Resources.Prompt.ExtractJsonFromUserMessagePrompt
 import io.github.lauzhack.backend.data.Resources.Prompt.GenerateQuestionForMissingJsonPrompt
+import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.common.api.*
 import io.github.lauzhack.common.api.AssistantRole.Assistant
 import io.github.lauzhack.common.api.AssistantRole.User
@@ -15,6 +16,7 @@ import kotlinx.serialization.encodeToString
 class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
     private val openAIService: OpenAIService,
+    private val railService: RailService,
 ) {
 
   private var currentPlanning = PlanningOptions()
@@ -56,6 +58,21 @@ class Session(
   private fun updatePlanning(json: String) {
     val extracted = DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
     currentPlanning = currentPlanning.updatedWith(extracted)
+
+    if (currentPlanning.isSufficient()) {
+      println("Planning is sufficient, computing trip...")
+      computeAndSendTrip()
+    }
+  }
+
+  private fun computeAndSendTrip() {
+    val startStationId = railService.getStartStationId()
+    val endStationId = railService.getEndStationId()
+    val startNode = railService.createStartPoint(startStationId, currentPlanning.startTime!!)
+    val path = railService.computePath(startNode, endStationId)
+    val trip = railService.pathToString(path)
+    println("Computed trip: $trip")
+    enqueueTripToUser(trip)
   }
 
   private fun getFirstChoice(response: OpenAIResponse) =
@@ -94,5 +111,9 @@ class Session(
         AssistantToUserSetPlanning(
             planningOptions = currentPlanning,
         ))
+  }
+
+  private fun enqueueTripToUser(path: String) {
+    enqueue(BackendToUserSetTrip(path))
   }
 }
