@@ -41,33 +41,7 @@ private class ChatStateImplementation(scope: CoroutineScope) : ChatState {
   private val queue = Channel<String>(Channel.UNLIMITED)
 
   override val conversation: List<ChatState.Message>
-    // messages
-    get() =
-        listOf(
-            ChatState.Message(
-                role = ChatState.Role.User,
-                content = "I want to travel from Lausanne to Geneva",
-                suggestions = emptyList(),
-            ),
-            ChatState.Message(
-                role = ChatState.Role.Assistant,
-                content = "Great! At what time would you like to leave?",
-                suggestions =
-                    listOf(
-                        Suggestion("10:00"),
-                        Suggestion("11:00"),
-                        Suggestion("12:00"),
-                        Suggestion("13:00"),
-                        Suggestion("14:00"),
-                        Suggestion("15:00"),
-                        Suggestion("16:00"),
-                        Suggestion("17:00"),
-                        Suggestion("18:00"),
-                        Suggestion("19:00"),
-                        Suggestion("20:00"),
-                    ),
-            ),
-        )
+    get() = messages
 
   override var input: String by mutableStateOf("")
 
