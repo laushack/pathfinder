@@ -39,7 +39,7 @@ fun main() {
 
   var startTime = System.currentTimeMillis()
   println("Building the schedule...")
-  val schedule = Schedule.build()
+  val schedule = Schedule.fromData()
   println("Schedule done! (took ${System.currentTimeMillis() - startTime}ms)")
 
   startTime = System.currentTimeMillis()
@@ -50,7 +50,7 @@ fun main() {
   path?.forEachIndexed { i, n ->
     println("$i: $n -> ${
     nameMap[n.id]
-  } -- ${minutesToTime(n.time)}")
+  } -- ${minutesToTime(n.arrival)}")
   } ?: println("No path lol")
 
   val port = 8888
