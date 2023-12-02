@@ -2,7 +2,9 @@
 
 package io.github.lauzhack.backend
 
-import io.github.lauzhack.backend.data.Resources
+import io.github.lauzhack.backend.algorithm.Algorithm
+import io.github.lauzhack.backend.algorithm.Node
+import io.github.lauzhack.backend.algorithm.Schedule
 import io.github.lauzhack.backend.jokes.HttpClientJokeService
 import io.github.lauzhack.backend.jokes.JokeService
 import io.ktor.http.*
@@ -47,9 +49,23 @@ suspend fun main() {
   //   println("${choice.message.role}: ${choice.message.content}")
   // }
 
-  for (line in Resources.Mobilitat.data()) {
-    println(line.contentToString())
-  }
+  //  for (line in Resources.Mobilitat.data()) {
+  //    println(line.contentToString())
+  //  }
+
+  val vlv = 8501116
+  val loz = 8501120
+  val startPoint = Node(vlv, 310, "")
+
+  println("Building the schedule...")
+  val schedule = Schedule.build()
+  println("Schedule done!")
+
+  println("Running the algorithm")
+  val algorithm = Algorithm(schedule)
+  val path = algorithm.run(startPoint, loz)
+  path.forEachIndexed { i, n -> println("$i: $n") }
+
   val port = 8888
   val jokes = HttpClientJokeService()
   embeddedServer(CIO, port = port) { application(jokes) }.start(wait = true)
