@@ -18,3 +18,11 @@ The project is built using Gradle. To run the project, you can use the following
 ./gradlew run # Starts the server, on port 8888
 ./gradlew jsBrowserDevelopmentRun --continuous # Starts the client on port 8080
 ```
+
+You'll need an OpenAI API key to run the project. You generate one [here](https://platform.openai.com/api-keys). 
+
+Once you have an api key and you have credits on your account, you can set it as an environment variable:
+
+```bash
+export OPENAI_API_KEY='your_api_key'
+```

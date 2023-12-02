@@ -2,6 +2,7 @@
 
 package io.github.lauzhack.backend
 
+import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.jokes.HttpClientJokeService
 import io.github.lauzhack.backend.jokes.JokeService
 import io.ktor.http.*
@@ -15,10 +16,40 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 
 /** The main entry point for the backend. */
-fun main() {
+suspend fun main() {
+  // val service = OpenAIService()
+  // val response =
+  //     service.prompt(
+  //         OpenAIRequest(
+  //             messages =
+  //                 listOf(
+  //                     OpenAIMessage(
+  //                         role = "system",
+  //                         content =
+  //                             "You are a travel assistant. Your role is to extract information
+  // from the user's dialogue, and output structured data a json that will then be parsed in a
+  // backend. Here are the information you need to extract: 'Starting location', 'Destination
+  // location', 'departure time'. Encore them into the json as 'start-location', 'end-location',
+  // 'start-time'. For the departure time, format it the following way: (hours:minutes) in 24h
+  // format. Only output the json content and nothing else.",
+  //                     ),
+  //                     OpenAIMessage(
+  //                         role = "user",
+  //                         content =
+  //                             "I want to go from Geneva station to Lausanne gare. I want to leave
+  // at 4 thirty pm."),
+  //                 ),
+  //         ),
+  //     )
+  // response.choices.forEach { choice ->
+  //   println("${choice.message.role}: ${choice.message.content}")
+  // }
+
+  for (line in Resources.Mobilitat.data()) {
+    println(line.contentToString())
+  }
   val port = 8888
   val jokes = HttpClientJokeService()
   embeddedServer(CIO, port = port) { application(jokes) }.start(wait = true)
