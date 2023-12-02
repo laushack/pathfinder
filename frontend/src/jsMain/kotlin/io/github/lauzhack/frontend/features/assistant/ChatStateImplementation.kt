@@ -41,7 +41,7 @@ private class ChatStateImplementation(scope: CoroutineScope) : ChatState {
   private val queue = Channel<String>(Channel.UNLIMITED)
 
   override val conversation: List<ChatState.Message>
-    get() = messages
+    get() = messages // FakeConversation
 
   override var input: String by mutableStateOf("")
 
@@ -91,3 +91,61 @@ private class ChatStateImplementation(scope: CoroutineScope) : ChatState {
     }
   }
 }
+
+private val FakeConversation =
+    listOf(
+        ChatState.Message(
+            role = ChatState.Role.User,
+            content = "I want to go to Lausanne from Geneva",
+            suggestions = listOf(),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.Assistant,
+            content = "Thanks for this information. At what time do you want to leave ?",
+            suggestions =
+                listOf(
+                    Suggestion("Now"),
+                    Suggestion("In 30 minutes"),
+                    Suggestion("In 1 hour"),
+                ),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.User,
+            content = "In 30 minutes",
+            suggestions = listOf(),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.Assistant,
+            content =
+                "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.",
+            suggestions =
+                listOf(
+                    Suggestion("Now"),
+                    Suggestion("In 30 minutes"),
+                    Suggestion("In 1 hour"),
+                ),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.User,
+            content = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ".repeat(10),
+            suggestions = listOf(),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.Assistant,
+            content = "Ok. Do you have a ticket or half-fare card ?",
+            suggestions =
+                listOf(
+                    Suggestion("Yes"),
+                    Suggestion("No"),
+                ),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.User,
+            content = "Yes",
+            suggestions = listOf(),
+        ),
+        ChatState.Message(
+            role = ChatState.Role.Assistant,
+            content = "Ok. Here is a list of trains you can take.",
+        ),
+    )
