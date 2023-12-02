@@ -76,16 +76,16 @@ class Schedule(private val map: Map<NodeID, List<Node>>) {
                               timeToMinutes(it[Resources.StopTimesTrain.DepartureTime]),
                               it[Resources.StopTimesTrain.TripId]))
                     } catch (e: NumberFormatException) {
-                      Pair(-1, Node(0, 0, ""))
+                      null
                     }
                   })
               .flatMap {
                 // remove the last position as it does not have a neighbor
-                val list = it.value.filter { v -> v.first >= 0 && v.first != it.value.size - 1 }
+                // remove the biggest po
+                val list = it.value.filterNotNull().sortedBy { i -> i.first }.map { i -> i.second }
+                val noLast = list.subList(0, list.size - 1).withIndex()
                 // map all nodes to their neighbor
-                list.map { (pos, node) ->
-                  Pair(node.id, it.value[pos + 1].second)
-                } // TODO: check l'ordre
+                noLast.map { n -> Pair(n.value.id, list[n.index + 1]) }
               }
               .groupBy({ it.first }, { it.second })
 

@@ -31,8 +31,9 @@ fun main() {
   val loz = 8501120
   val stGallen = 8506302
   val frib = 8504100
+  val romont = 8504023
   val start = frib
-  val end = loz
+  val end = romont
 
   val startPoint = Node(start, timeToMinutes("10:20:00"), "")
 
@@ -46,10 +47,11 @@ fun main() {
   val algorithm = Algorithm(schedule)
   val path = algorithm.run(startPoint, end)
   println("Algorithm done! (took ${System.currentTimeMillis() - startTime}ms)")
-  path?.forEachIndexed { i, n -> println("$i: $n -> ${
+  path?.forEachIndexed { i, n ->
+    println("$i: $n -> ${
     nameMap[n.id]
-  } -- ${minutesToTime(n.time)}") }
-      ?: println("No path lol")
+  } -- ${minutesToTime(n.time)}")
+  } ?: println("No path lol")
 
   val port = 8888
   embeddedServer(CIO, port = port) { application() }.start(wait = true)

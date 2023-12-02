@@ -1,41 +1,34 @@
 package io.github.lauzhack.backend.data
 
-import com.opencsv.CSVReader
-import com.opencsv.CSVReaderBaseBuilder
-import com.opencsv.CSVReaderBuilder
 import com.opencsv.CSVParserBuilder
-
-import com.opencsv.CSVParser
-
-
-
+import com.opencsv.CSVReaderBuilder
 
 object Resources {
 
   /** Loads a CSV file with the given resource name. */
   private fun load(file: String, separator: Char = ',') =
-    this::class
-      .java
-      .classLoader
-      .getResourceAsStream(file)!!
-      .reader()
-      .let {
-        CSVReaderBuilder(it)
-          .withCSVParser(CSVParserBuilder().withSeparator(separator).build())
-          .build()
-      }
-      .apply { skip(1) } // Skips the header row.
-      .readAll()
+      this::class
+          .java
+          .classLoader
+          .getResourceAsStream(file)!!
+          .reader()
+          .let {
+            CSVReaderBuilder(it)
+                .withCSVParser(CSVParserBuilder().withSeparator(separator).build())
+                .build()
+          }
+          .apply { skip(1) } // Skips the header row.
+          .readAll()
 
-    //val csvParser = CSVParserBuilder().withSeparator(';').build() // custom separator
-    //this::class.java.classLoader.getResourceAsStream(file)!!
-    //  .reader()
-    //  .let {
-    //    CSVReaderBuilder(it)
-    //      .withCSVParser(csvParser)
-    //      .build()
-    //  }.apply { skip(1) }
-    //  .readAll()
+  // val csvParser = CSVParserBuilder().withSeparator(';').build() // custom separator
+  // this::class.java.classLoader.getResourceAsStream(file)!!
+  //  .reader()
+  //  .let {
+  //    CSVReaderBuilder(it)
+  //      .withCSVParser(csvParser)
+  //      .build()
+  //  }.apply { skip(1) }
+  //  .readAll()
 
   /** Contains the data from the `agency.txt` file. */
   object Agency {
@@ -132,7 +125,7 @@ object Resources {
 
   object Stops {
     val StopId = 0
-    val StopName = 1
+    val StopName = 2
     val StopLat = 2
     val StopLon = 3
     val LocationType = 4
