@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class QueryParameters(
-    @SerialName("start-location") val startLocation: String?,
-    @SerialName("end-location") val endLocation: String,
-    @SerialName("start-time") val startTime: String,
-    @SerialName("start-date") val date: String,
-    @SerialName("end-time") val endTime: String,
-    @SerialName("subscription") val subscription: String,
+    @SerialName("start-location") val startLocation: String? = null,
+    @SerialName("end-location") val endLocation: String? = null,
+    @SerialName("start-time") val startTime: String? = null,
+    @SerialName("start-date") val date: String? = null,
+    @SerialName("end-time") val endTime: String? = null,
+    @SerialName("subscription") val subscription: String? = null,
 )
