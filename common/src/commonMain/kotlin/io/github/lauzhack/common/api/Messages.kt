@@ -7,6 +7,7 @@ val DefaultJsonSerializer =
       ignoreUnknownKeys = true
       isLenient = true
       encodeDefaults = true
+      prettyPrint = true
       classDiscriminator = "type"
     }
 

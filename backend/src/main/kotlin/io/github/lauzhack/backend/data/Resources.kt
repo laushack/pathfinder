@@ -20,15 +20,20 @@ object Resources {
           .apply { skip(1) } // Skips the header row.
           .readAll()
 
-  // val csvParser = CSVParserBuilder().withSeparator(';').build() // custom separator
-  // this::class.java.classLoader.getResourceAsStream(file)!!
-  //  .reader()
-  //  .let {
-  //    CSVReaderBuilder(it)
-  //      .withCSVParser(csvParser)
-  //      .build()
-  //  }.apply { skip(1) }
-  //  .readAll()
+
+  private fun loadText(file: String) =
+      this::class
+          .java
+          .classLoader
+          .getResourceAsStream(file)!!
+          .reader()
+          .readText()
+
+  object Prompt {
+    val QueryPrompt = loadText("GenerateQuestionForMissingJson.prompt")
+    val UserPrompt = loadText("ExtractJsonFromUserMessage.prompt")
+  }
+
 
   /** Contains the data from the `agency.txt` file. */
   object Agency {
