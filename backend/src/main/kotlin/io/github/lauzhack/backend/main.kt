@@ -2,6 +2,7 @@
 
 package io.github.lauzhack.backend
 
+import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.jokes.HttpClientJokeService
 import io.github.lauzhack.backend.jokes.JokeService
 import io.ktor.http.*
@@ -15,10 +16,12 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 
 /** The main entry point for the backend. */
 fun main() {
+  for (line in Resources.Mobilitat.data()) {
+    println(line.contentToString())
+  }
   val port = 8888
   val jokes = HttpClientJokeService()
   embeddedServer(CIO, port = port) { application(jokes) }.start(wait = true)

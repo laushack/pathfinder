@@ -15,4 +15,7 @@ dependencies {
   implementation("io.ktor:ktor-server-cio:2.3.6")
   implementation("io.ktor:ktor-server-content-negotiation:2.3.6")
   implementation("io.ktor:ktor-server-websockets:2.3.6")
+
+  // OpenCSV
+  implementation("com.opencsv:opencsv:5.5.2")
 }
