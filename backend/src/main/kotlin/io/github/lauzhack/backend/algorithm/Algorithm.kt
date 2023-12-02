@@ -3,7 +3,7 @@ package io.github.lauzhack.backend.algorithm
 import io.github.lauzhack.backend.data.Resources
 import java.util.PriorityQueue
 
-typealias NodeID = String
+typealias NodeID = Int
 
 typealias Time = Long
 
@@ -38,7 +38,7 @@ class Algorithm(private val schedule: Schedule) {
     }
 
     val path = mutableListOf<Node>()
-    var current = Node(end, visited[end]!!.first)
+    var current = Node(end, visited[end]!!.first, "") // TODO: correct tripID
     while (current.id != start.id) {
       path.add(current)
       current = visited[current.id]!!.second
@@ -53,7 +53,7 @@ class Algorithm(private val schedule: Schedule) {
   }
 }
 
-data class Node(val id: NodeID, val time: Time)
+data class Node(val id: NodeID, val time: Time, val tripID: String)
 
 class Schedule(private val map: Map<NodeID, List<Node>>) {
 
@@ -66,15 +66,20 @@ class Schedule(private val map: Map<NodeID, List<Node>>) {
               .groupBy(
                   { it[Resources.StopTimesTrain.TripId] },
                   {
-                    Pair(
-                        it[Resources.StopTimesTrain.StopSequence].toInt(),
-                        Node(
-                            it[Resources.StopTimesTrain.StopId],
-                            timeToMinutes(it[Resources.StopTimesTrain.DepartureTime])))
+                    try {
+                      Pair(
+                          it[Resources.StopTimesTrain.StopSequence].toInt(),
+                          Node(
+                              it[Resources.StopTimesTrain.StopId].split(":")[0].toInt(),
+                              timeToMinutes(it[Resources.StopTimesTrain.DepartureTime]),
+                              it[Resources.StopTimesTrain.TripId]))
+                    } catch (e: NumberFormatException) {
+                      Pair(-1, Node(0, 0, ""))
+                    }
                   })
               .flatMap {
                 // remove the last position as it does not have a neighbor
-                val list = it.value.filter { v -> v.first != it.value.size - 1 }
+                val list = it.value.filter { v -> v.first >= 0 && v.first != it.value.size - 1 }
                 // map all nodes to their neighbor
                 list.map { (pos, node) ->
                   Pair(node.id, it.value[pos + 1].second)
@@ -93,7 +98,7 @@ class Schedule(private val map: Map<NodeID, List<Node>>) {
 
 fun timeToMinutes(timeStr: String): Long {
   // Split the string into hours, minutes, and seconds
-  val (h, m, s) = timeStr.split(':').map { it.toInt() }
+  val (h, m, _) = timeStr.split(':').map { it.toInt() }
 
   // Convert hours and minutes to total minutes
 
