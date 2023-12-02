@@ -1,8 +1,8 @@
-package io.github.lauzhack.frontend
+package io.github.lauzhack.frontend.features.assistant
 
 import androidx.compose.runtime.*
 import io.github.lauzhack.common.api.*
-import io.github.lauzhack.frontend.ui.material.OutlinedButton
+import io.github.lauzhack.frontend.features.assistant.ChatState.Suggestion
 import io.github.lauzhack.frontend.utils.ktor.deserializeFromFrame
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -14,22 +14,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
-import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Input
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
 
-interface Chat {
-
-  val conversation: List<String>
-
-  var input: String
-
-  fun send()
+/** Returns an implementation of a [ChatState]. */
+@Composable
+fun rememberChatState(): ChatState {
+  val scope = rememberCoroutineScope()
+  return remember(scope) { ChatStateImplementation(scope) }
 }
 
-class ChatImpl(scope: CoroutineScope) : Chat {
+private class ChatStateImplementation(scope: CoroutineScope) : ChatState {
 
   private val httpClient = HttpClient {
     install(ContentNegotiation) { json() }
@@ -43,18 +36,24 @@ class ChatImpl(scope: CoroutineScope) : Chat {
     }
   }
 
-  private val messages = mutableStateListOf<String>()
+  private val messages = mutableStateListOf<ChatState.Message>()
 
   private val queue = Channel<String>(Channel.UNLIMITED)
 
-  override val conversation: List<String>
+  override val conversation: List<ChatState.Message>
     get() = messages
 
   override var input: String by mutableStateOf("")
 
-  override fun send() {
+  override fun onSendClick() {
     queue.trySend(input)
+    messages.add(ChatState.Message(ChatState.Role.User, input))
     input = ""
+  }
+
+  override fun onSuggestionClick(suggestion: Suggestion) {
+    queue.trySend(suggestion.text)
+    messages.add(ChatState.Message(ChatState.Role.User, suggestion.text))
   }
 
   init {
@@ -70,7 +69,19 @@ class ChatImpl(scope: CoroutineScope) : Chat {
               when (response) {
                 is AssistantToUserConversation -> {
                   messages.clear()
-                  messages.addAll(response.messages.map { it.text })
+                  messages.addAll(
+                      response.messages.map {
+                        ChatState.Message(
+                            role =
+                                when (it.role) {
+                                  AssistantRole.Assistant -> ChatState.Role.Assistant
+                                  AssistantRole.User -> ChatState.Role.User
+                                },
+                            content = it.text,
+                            suggestions = it.suggestions.map(::Suggestion),
+                        )
+                      },
+                  )
                 }
               }
             }
@@ -78,26 +89,5 @@ class ChatImpl(scope: CoroutineScope) : Chat {
         }
       }
     }
-  }
-}
-
-@Composable
-fun rememberChatState(): Chat {
-  val scope = rememberCoroutineScope()
-  return remember(scope) { ChatImpl(scope) }
-}
-
-@Composable
-fun ChatScreen(chat: Chat) {
-  Div {
-    chat.conversation.forEach { message -> Span { Text(message) } }
-    Input(
-        InputType.Text,
-        attrs = {
-          value(chat.input)
-          onInput { chat.input = it.value }
-        },
-    )
-    OutlinedButton(attrs = { onClick { chat.send() } }) { Text("Send") }
   }
 }
