@@ -5,9 +5,13 @@ package io.github.lauzhack.backend
 import io.github.lauzhack.backend.algorithm.Algorithm
 import io.github.lauzhack.backend.algorithm.Node
 import io.github.lauzhack.backend.algorithm.Schedule
-import io.github.lauzhack.backend.jokes.HttpClientJokeService
-import io.github.lauzhack.backend.jokes.JokeService
-import io.ktor.http.*
+import io.github.lauzhack.backend.api.openAI.OpenAIService
+import io.github.lauzhack.backend.features.session.Session
+import io.github.lauzhack.backend.utils.ktor.deserializeFromFrame
+import io.github.lauzhack.backend.utils.ktor.serializeToFrame
+import io.github.lauzhack.common.api.BackendToUserMessage
+import io.github.lauzhack.common.api.DefaultJsonSerializer
+import io.github.lauzhack.common.api.UserToBackendMessage
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -15,44 +19,15 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import kotlinx.coroutines.channels.onClosed
+import kotlinx.coroutines.channels.onFailure
+import kotlinx.coroutines.channels.onSuccess
+import kotlinx.coroutines.selects.select
 
 /** The main entry point for the backend. */
-suspend fun main() {
-  // val service = OpenAIService()
-  // val response =
-  //     service.prompt(
-  //         OpenAIRequest(
-  //             messages =
-  //                 listOf(
-  //                     OpenAIMessage(
-  //                         role = "system",
-  //                         content =
-  //                             "You are a travel assistant. Your role is to extract information
-  // from the user's dialogue, and output structured data a json that will then be parsed in a
-  // backend. Here are the information you need to extract: 'Starting location', 'Destination
-  // location', 'departure time'. Encore them into the json as 'start-location', 'end-location',
-  // 'start-time'. For the departure time, format it the following way: (hours:minutes) in 24h
-  // format. Only output the json content and nothing else.",
-  //                     ),
-  //                     OpenAIMessage(
-  //                         role = "user",
-  //                         content =
-  //                             "I want to go from Geneva station to Lausanne gare. I want to leave
-  // at 4 thirty pm."),
-  //                 ),
-  //         ),
-  //     )
-  // response.choices.forEach { choice ->
-  //   println("${choice.message.role}: ${choice.message.content}")
-  // }
-
-  //  for (line in Resources.Mobilitat.data()) {
-  //    println(line.contentToString())
-  //  }
-
+fun main() {
   val vlv = 8501116
   val loz = 8501120
   val startPoint = Node(vlv, 310, "")
@@ -67,16 +42,14 @@ suspend fun main() {
   path.forEachIndexed { i, n -> println("$i: $n") }
 
   val port = 8888
-  val jokes = HttpClientJokeService()
-  embeddedServer(CIO, port = port) { application(jokes) }.start(wait = true)
+  embeddedServer(CIO, port = port) { application() }.start(wait = true)
 }
 
 /** Configures the application. */
-private fun Application.application(jokes: JokeService) {
+private fun Application.application() {
   cors()
   contentNegotiation()
-  http(jokes)
-  sockets(jokes)
+  sockets()
 }
 
 /** Configures the Cross-Origin Resource Sharing (CORS) plugin. */
@@ -90,21 +63,36 @@ private fun Application.cors() {
 
 /** Configures the Content Negotiation plugin. */
 private fun Application.contentNegotiation() {
-  install(ContentNegotiation) { json() }
-}
-
-/** Configures the HTTP routing. */
-private fun Application.http(service: JokeService) {
-  routing {
-    post("/refresh") {
-      service.refresh()
-      call.respond(HttpStatusCode.OK, "")
-    }
-  }
+  install(ContentNegotiation) { json(DefaultJsonSerializer) }
 }
 
 /** Configures the WebSocket routing. */
-private fun Application.sockets(service: JokeService) {
-  install(WebSockets) { contentConverter = KotlinxWebsocketSerializationConverter(DefaultJson) }
-  routing { webSocket("/live") { service.latestJoke().collect { sendSerialized(it) } } }
+private fun Application.sockets() {
+  install(WebSockets) {
+    contentConverter = KotlinxWebsocketSerializationConverter(DefaultJsonSerializer)
+  }
+  routing {
+    webSocket("/live") {
+      val toSend = mutableListOf<BackendToUserMessage>()
+      val session = Session(toSend::add, OpenAIService())
+      var keepGoing = true
+      while (keepGoing) {
+        if (toSend.isNotEmpty()) {
+          val frame = serializeToFrame(toSend.first())
+          select<Unit> {
+            outgoing.onSend(frame) { toSend.removeFirst() }
+            incoming.onReceiveCatching { message ->
+              message
+                  .onSuccess { session.process(deserializeFromFrame(it)) }
+                  .onFailure { keepGoing = false }
+                  .onClosed { keepGoing = false }
+            }
+          }
+        } else {
+          val message = deserializeFromFrame<UserToBackendMessage>(incoming.receive())
+          session.process(message)
+        }
+      }
+    }
+  }
 }

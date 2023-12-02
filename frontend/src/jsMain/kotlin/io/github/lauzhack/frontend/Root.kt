@@ -1,10 +1,10 @@
 package io.github.lauzhack.frontend
 
 import androidx.compose.runtime.*
-import io.github.lauzhack.frontend.jokes.JokeScreen
-import io.github.lauzhack.frontend.jokes.rememberJokeScreenState
+import io.github.lauzhack.frontend.features.assistant.ChatFloatingWindow
+import io.github.lauzhack.frontend.features.assistant.rememberChatState
+import io.github.lauzhack.frontend.ui.Tokens.cffPinkVeryLight
 import io.github.lauzhack.frontend.ui.tailwind.*
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.dom.DOMScope
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLBodyElement
@@ -16,33 +16,16 @@ fun DOMScope<HTMLBodyElement>.Root() {
     Div(
         attrs = {
           inlineTailwind {
+            bgColor(cffPinkVeryLight)
             flex()
             flexCol()
             hScreen()
-            itemsCenter()
-            justifyCenter()
+            px(32f)
+            py(16f)
           }
         },
     ) {
-      val state = rememberJokeScreenState()
-      var translationX by remember { mutableStateOf(0f) }
-      var translationY by remember { mutableStateOf(0f) }
-      LaunchedEffect(Unit) {
-        while (true) {
-          delay(250)
-          translationX = (-100..100).random().toFloat()
-          translationY = (-100..100).random().toFloat()
-        }
-      }
-      JokeScreen(
-          attrs = {
-            inlineTailwind {
-              translateXY(translationX, translationY)
-              transitionAll(duration = 300)
-            }
-          },
-          state = state,
-      )
+      ChatFloatingWindow(rememberChatState())
     }
   }
 }
