@@ -68,7 +68,10 @@ class ChatImpl(scope: CoroutineScope) : Chat {
             incoming.onReceive { message ->
               val response = deserializeFromFrame<BackendToUserMessage>(message)
               when (response) {
-                is AssistantToUserMessage -> messages.add(response.text)
+                is AssistantToUserConversation -> {
+                  messages.clear()
+                  messages.addAll(response.messages.map { it.text })
+                }
               }
             }
           }
