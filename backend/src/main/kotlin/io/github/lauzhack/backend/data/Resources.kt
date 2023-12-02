@@ -1,19 +1,25 @@
 package io.github.lauzhack.backend.data
 
-import com.opencsv.CSVReader
+import com.opencsv.CSVParserBuilder
+import com.opencsv.CSVReaderBuilder
 
 object Resources {
 
   /** Loads a CSV file with the given resource name. */
-  private fun load(file: String) =
+  private fun load(file: String, separator: Char = ',') =
       this::class
           .java
           .classLoader
           .getResourceAsStream(file)!!
           .reader()
-          .let(::CSVReader)
+          .let {
+            CSVReaderBuilder(it)
+                .withCSVParser(CSVParserBuilder().withSeparator(separator).build())
+                .build()
+          }
           .apply { skip(1) } // Skips the header row.
           .readAll()
+
 
   private fun loadText(file: String) =
       this::class
@@ -27,6 +33,7 @@ object Resources {
     val QueryPrompt = loadText("GenerateQuestionForMissingJson.prompt")
     val UserPrompt = loadText("ExtractJsonFromUserMessage.prompt")
   }
+
 
   /** Contains the data from the `agency.txt` file. */
   object Agency {
@@ -93,6 +100,21 @@ object Resources {
     fun data() = load("routes.txt")
   }
 
+  object StopTimesTrain {
+    val TripId = 0
+    val ArrivalTime = 1
+    val DepartureTime = 2
+    val StopId = 3
+    val StopSequence = 4
+    val PickupType = 5
+    val DropOffType = 6
+    val ShapeDistTraveled = 7
+    val AttributesCh = 8
+
+    /** Reads all the data from a file named `stop_times.txt` in the resource folder. */
+    fun data() = load("stop_times_20230606.txt")
+  }
+
   object StopTimes {
     val TripId = 0
     val ArrivalTime = 1
@@ -108,7 +130,7 @@ object Resources {
 
   object Stops {
     val StopId = 0
-    val StopName = 1
+    val StopName = 2
     val StopLat = 2
     val StopLon = 3
     val LocationType = 4
@@ -177,6 +199,6 @@ object Resources {
     val PostalCode = 30
 
     /** Reads all the data from a file named `mobilitat.csv` in the resources folder. */
-    fun data() = load("mobilitat.csv")
+    fun data() = load("mobilitat.csv", ';')
   }
 }
