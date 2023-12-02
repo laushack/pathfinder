@@ -49,23 +49,20 @@ class Session(
           val first = choices.first().message
           val json = first.content
 
-          val queryParameters: PlanningOptions? =
-              try {
-                val extracted =
-                    DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
-                println(extracted)
-                currentPlanning = currentPlanning.updatedWith(extracted)
-                currentPlanning
-              } catch (e: Exception) {
-                println("Error: $e")
-                null // Explicitly return null in case of an exception
-              }
+          try {
+            val extracted =
+                DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
+            println(extracted)
+            currentPlanning = currentPlanning.updatedWith(extracted)
+            currentPlanning
+          } catch (e: Exception) {
+            println("Error: $e")
+          }
 
-          val currentJson =
-              queryParameters?.let { DefaultJsonSerializer.encodeToString<PlanningOptions>(it) }
-                  ?: "{}"
+          val currentJson = DefaultJsonSerializer.encodeToString(currentPlanning)
 
           val prompt = askForResponsePrompt.replace("\$INJECT_CURRENT_JSON\$", currentJson)
+          println(prompt)
           val response2 =
               openAIService.prompt(
                   OpenAIRequest(
