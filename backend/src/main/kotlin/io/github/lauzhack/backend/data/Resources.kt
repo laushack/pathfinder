@@ -1,19 +1,41 @@
 package io.github.lauzhack.backend.data
 
 import com.opencsv.CSVReader
+import com.opencsv.CSVReaderBaseBuilder
+import com.opencsv.CSVReaderBuilder
+import com.opencsv.CSVParserBuilder
+
+import com.opencsv.CSVParser
+
+
+
 
 object Resources {
 
   /** Loads a CSV file with the given resource name. */
-  private fun load(file: String) =
-      this::class
-          .java
-          .classLoader
-          .getResourceAsStream(file)!!
-          .reader()
-          .let(::CSVReader)
-          .apply { skip(1) } // Skips the header row.
-          .readAll()
+  private fun load(file: String, separator: Char = ',') =
+    this::class
+      .java
+      .classLoader
+      .getResourceAsStream(file)!!
+      .reader()
+      .let {
+        CSVReaderBuilder(it)
+          .withCSVParser(CSVParserBuilder().withSeparator(separator).build())
+          .build()
+      }
+      .apply { skip(1) } // Skips the header row.
+      .readAll()
+
+    //val csvParser = CSVParserBuilder().withSeparator(';').build() // custom separator
+    //this::class.java.classLoader.getResourceAsStream(file)!!
+    //  .reader()
+    //  .let {
+    //    CSVReaderBuilder(it)
+    //      .withCSVParser(csvParser)
+    //      .build()
+    //  }.apply { skip(1) }
+    //  .readAll()
 
   /** Contains the data from the `agency.txt` file. */
   object Agency {
@@ -179,6 +201,6 @@ object Resources {
     val PostalCode = 30
 
     /** Reads all the data from a file named `mobilitat.csv` in the resources folder. */
-    fun data() = load("mobilitat.csv")
+    fun data() = load("mobilitat.csv", ';')
   }
 }
