@@ -15,26 +15,21 @@ class RailService {
     private const val romont = 8504023
   }
 
-  val schedule = Schedule.build()
-  val algorithm = Algorithm(schedule)
+  private val schedule = Schedule.fromData()
+  private val algorithm = Algorithm(schedule)
 
-  fun createStartPoint(startId: StationId, time: String): Node {
-    return Node(startId, timeToMinutes("$time:00"), "")
-  }
-
-  fun computePath(startPoint: Node, endId: StationId): List<Node>? {
-    return algorithm.run(startPoint, endId)
+  fun computePath(startID: NodeID, startTime: Time, endId: StationId): List<Node>? {
+    return algorithm.run(startID, startTime, endId)
   }
 
   fun pathToString(path: List<Node>?): String {
     val result = StringBuilder()
     path?.forEachIndexed { i, n ->
-      result.append("$i: $n -> ${nameMap[n.id]} -- ${minutesToTime(n.time)}\n")
+      result.append("$i: $n -> ${nameMap[n.id]} -- ${minutesToTime(n.arrival)}\n")
     } ?: result.append("No path lol")
 
     return result.toString()
   }
-
 
   fun getStartStationId(): StationId {
     return vlv

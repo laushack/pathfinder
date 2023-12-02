@@ -1,5 +1,6 @@
 package io.github.lauzhack.backend.features.session
 
+import io.github.lauzhack.backend.algorithm.timeToMinutes
 import io.github.lauzhack.backend.api.openAI.OpenAIMessage
 import io.github.lauzhack.backend.api.openAI.OpenAIRequest
 import io.github.lauzhack.backend.api.openAI.OpenAIResponse
@@ -68,8 +69,9 @@ class Session(
   private fun computeAndSendTrip() {
     val startStationId = railService.getStartStationId()
     val endStationId = railService.getEndStationId()
-    val startNode = railService.createStartPoint(startStationId, currentPlanning.startTime!!)
-    val path = railService.computePath(startNode, endStationId)
+    val startTime = timeToMinutes(currentPlanning.startTime!!)
+
+    val path = railService.computePath(startStationId, startTime, endStationId)
     val trip = railService.pathToString(path)
     println("Computed trip: $trip")
     enqueueTripToUser(trip)
