@@ -13,7 +13,7 @@ class ClosestPPRAlogrithm(val pprData: List<PPR>) {
     return pprData
         .sortedBy { ppr -> distance(location, ppr.location) }
         .take(5)
-        .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toInt()) }
+        .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toLong()) }
   }
 
   companion object {
