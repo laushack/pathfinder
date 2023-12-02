@@ -13,7 +13,7 @@ The following are the optional information  that can be provided, but not mandat
 - "end-time" (The time at which the journey must finish)
 - "subscription" (The name of the train subscription of the user)
 
-The current JSON contains has the following content:
+The current JSON content has the following content:
 
 $INJECT_CURRENT_JSON$
 
