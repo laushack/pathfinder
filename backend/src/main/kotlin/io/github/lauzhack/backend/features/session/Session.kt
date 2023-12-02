@@ -1,10 +1,13 @@
 package io.github.lauzhack.backend.features.session
 
+import io.github.lauzhack.backend.algorithm.timeToMinutes
 import io.github.lauzhack.backend.api.openAI.OpenAIMessage
 import io.github.lauzhack.backend.api.openAI.OpenAIRequest
+import io.github.lauzhack.backend.api.openAI.OpenAIResponse
 import io.github.lauzhack.backend.api.openAI.OpenAIService
 import io.github.lauzhack.backend.data.Resources.Prompt.ExtractJsonFromUserMessagePrompt
 import io.github.lauzhack.backend.data.Resources.Prompt.GenerateQuestionForMissingJsonPrompt
+import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.common.api.*
 import io.github.lauzhack.common.api.AssistantRole.Assistant
 import io.github.lauzhack.common.api.AssistantRole.User
@@ -14,6 +17,7 @@ import kotlinx.serialization.encodeToString
 class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
     private val openAIService: OpenAIService,
+    private val railService: RailService,
 ) {
 
   private var currentPlanning = PlanningOptions()
@@ -37,7 +41,7 @@ class Session(
     updateConversation(message.text, ROLE_USER)
     val extractJsonPrompt = ExtractJsonFromUserMessagePrompt
     val extractPromptResponse = openAIResponseForConversation(extractJsonPrompt)
-    val json = extractPromptResponse.choices.firstOrNull()?.message?.content ?: "{}"
+    val json = getFirstChoice(extractPromptResponse) ?: "{}"
 
     updatePlanning(json)
 
@@ -45,9 +49,7 @@ class Session(
     val questionPrompt =
         GenerateQuestionForMissingJsonPrompt.replace(STRING_JSON_INJECT, currentJson)
     val questionPromptResponse = openAIResponseForConversation(questionPrompt)
-    val question =
-        questionPromptResponse.choices.firstOrNull()?.message?.content
-            ?: "An error occurred. Please try again."
+    val question = getFirstChoice(questionPromptResponse) ?: "An error occurred. Please try again."
 
     updateConversation(question, ROLE_ASSISTANT)
     enqueueConversationToUser()
@@ -56,9 +58,27 @@ class Session(
 
   private fun updatePlanning(json: String) {
     val extracted = DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
-    println(extracted)
     currentPlanning = currentPlanning.updatedWith(extracted)
+
+    if (currentPlanning.isSufficient()) {
+      println("Planning is sufficient, computing trip...")
+      computeAndSendTrip()
+    }
   }
+
+  private fun computeAndSendTrip() {
+    val startStationId = railService.getStartStationId()
+    val endStationId = railService.getEndStationId()
+    val startTime = timeToMinutes(currentPlanning.startTime!!)
+
+    val path = railService.computePath(startStationId, startTime, endStationId)
+    val trip = railService.pathToString(path)
+    println("Computed trip: $trip")
+    enqueueTripToUser(trip)
+  }
+
+  private fun getFirstChoice(response: OpenAIResponse) =
+      response.choices.firstOrNull()?.message?.content
 
   private suspend fun openAIResponseForConversation(prompt: String, role: String = ROLE_SYSTEM) =
       openAIService.prompt(
@@ -88,9 +108,14 @@ class Session(
   }
 
   private fun enqueuePlanningToUser() {
+    println("Updated planning: $currentPlanning")
     enqueue(
         AssistantToUserSetPlanning(
             planningOptions = currentPlanning,
         ))
+  }
+
+  private fun enqueueTripToUser(path: String) {
+    enqueue(BackendToUserSetTrip(path))
   }
 }

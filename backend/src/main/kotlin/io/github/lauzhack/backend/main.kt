@@ -5,6 +5,7 @@ package io.github.lauzhack.backend
 import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.api.openAI.OpenAIService
 import io.github.lauzhack.backend.data.Resources
+import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.backend.features.session.Session
 import io.github.lauzhack.backend.utils.ktor.deserializeFromFrame
 import io.github.lauzhack.backend.utils.ktor.serializeToFrame
@@ -32,25 +33,24 @@ fun main() {
   val stGallen = 8506302
   val frib = 8504100
   val romont = 8504023
-  val start = frib
-  val end = romont
+  val start = vlv
+  val end = stGallen
+  val startTime = timeToMinutes("10:20:00")
 
-  val startPoint = Node(start, timeToMinutes("10:20:00"), "")
-
-  var startTime = System.currentTimeMillis()
+  var time = System.currentTimeMillis()
   println("Building the schedule...")
-  val schedule = Schedule.build()
-  println("Schedule done! (took ${System.currentTimeMillis() - startTime}ms)")
+  val schedule = Schedule.fromData()
+  println("Schedule done! (took ${System.currentTimeMillis() - time}ms)")
 
-  startTime = System.currentTimeMillis()
+  time = System.currentTimeMillis()
   println("Running the algorithm")
   val algorithm = Algorithm(schedule)
-  val path = algorithm.run(startPoint, end)
-  println("Algorithm done! (took ${System.currentTimeMillis() - startTime}ms)")
+  val path = algorithm.run(start, startTime, end)
+  println("Algorithm done! (took ${System.currentTimeMillis() - time}ms)")
   path?.forEachIndexed { i, n ->
     println("$i: $n -> ${
     nameMap[n.id]
-  } -- ${minutesToTime(n.time)}")
+  } -- ${minutesToTime(n.arrival)}")
   } ?: println("No path lol")
 
   val port = 8888
@@ -61,6 +61,8 @@ private val nameMap: Map<NodeID, String> =
     Resources.Stops.data().associate {
       it[Resources.Stops.StopId].split(":")[0].toInt() to it[Resources.Stops.StopName]
     }
+
+private val railService = RailService()
 
 private fun minutesToTime(minutes: Time): String {
   val hours = minutes / 60
@@ -94,10 +96,11 @@ private fun Application.sockets() {
   install(WebSockets) {
     contentConverter = KotlinxWebsocketSerializationConverter(DefaultJsonSerializer)
   }
+
   routing {
     webSocket("/live") {
       val toSend = mutableListOf<BackendToUserMessage>()
-      val session = Session(toSend::add, OpenAIService())
+      val session = Session(toSend::add, OpenAIService(), railService)
       var keepGoing = true
       while (keepGoing) {
         if (toSend.isNotEmpty()) {

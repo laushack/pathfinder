@@ -55,6 +55,9 @@ class BackendService(
   var conversation: List<AssistantToUserMessage> by mutableStateOf(emptyList())
     private set
 
+  var trip: String by mutableStateOf("")
+    private set
+
   /** The planning options with the assistant. */
   var planningOptions: PlanningOptions by mutableStateOf(PlanningOptions())
     private set
@@ -85,6 +88,7 @@ class BackendService(
                 when (val msg = deserializeFromFrame<BackendToUserMessage>(it)) {
                   is AssistantToUserConversation -> conversation = msg.messages
                   is AssistantToUserSetPlanning -> planningOptions = msg.planningOptions
+                  is BackendToUserSetTrip -> trip = msg.trip
                 }
               }
             }

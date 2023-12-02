@@ -3,9 +3,13 @@ package io.github.lauzhack.backend.algorithm
 import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.data.Resources.Mobilitat.Geopos
 import io.github.lauzhack.backend.data.Resources.Mobilitat.OPUIC
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /** Algorithm for the first segment, location to PPR using car */
-class ClosestPPRAlogrithm(val pprData: List<PPR>) {
+class ClosestPPRAlgorithm(val pprData: List<PPR>) {
   /**
    * Returns the reasonably closest PPRs to the given location, and the estimated time to go there.
    */
@@ -18,13 +22,13 @@ class ClosestPPRAlogrithm(val pprData: List<PPR>) {
 
   companion object {
     /** Build an algorithm from the dataset */
-    fun fromData(): ClosestPPRAlogrithm {
+    fun fromData(): ClosestPPRAlgorithm {
       val pprData =
           Resources.Mobilitat.data().map {
             val location = parseGeoPos(it[Geopos])
             PPR(it[OPUIC].toInt(), location)
           }
-      return ClosestPPRAlogrithm(pprData)
+      return ClosestPPRAlgorithm(pprData)
     }
   }
 }
@@ -49,10 +53,8 @@ fun distance(a: Location, b: Location): Double {
   val Δφ = Math.toRadians(b.lat - a.lat)
   val Δλ = Math.toRadians(b.lon - a.lon)
 
-  val x =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-          Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
-  val y = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x))
+  val x = sin(Δφ / 2) * sin(Δφ / 2) + cos(φ1) * cos(φ2) * sin(Δλ / 2) * sin(Δλ / 2)
+  val y = 2 * atan2(sqrt(x), sqrt(1 - x))
 
   return R * y
 }
