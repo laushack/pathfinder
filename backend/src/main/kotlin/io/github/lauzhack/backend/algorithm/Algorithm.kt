@@ -16,6 +16,7 @@ class Algorithm(private val schedule: Schedule) {
     val done = mutableSetOf<NodeID>()
 
     priorityList.add(start)
+    visited[start.id] = Pair(start, start.id)
 
     while (priorityList.isNotEmpty()) {
       val current = priorityList.poll()
@@ -30,6 +31,7 @@ class Algorithm(private val schedule: Schedule) {
 
       val neighbors = schedule.getDepartures(current.id, current.arrival)
       for (neighbor in neighbors) {
+
         if (!visited.containsKey(neighbor.id) ||
             neighbor.arrival < visited[neighbor.id]!!.first.arrival) {
           visited[neighbor.id] = Pair(neighbor, current.id)
@@ -45,7 +47,15 @@ class Algorithm(private val schedule: Schedule) {
         path.add(current.first)
         current = visited[current.second]!!
       }
-      path.add(start) // TODO: not add regular start but the one of the train
+      // Don't look
+      val second = path.last()
+      val departure =
+          schedule.map[start.id]!!
+              .filter { it.destination.id == second.id && it.departTime >= start.arrival }
+              .sortedBy { it.departTime }
+              .first()
+      val first = Node(start.id, departure.departTime, second.tripID)
+      path.add(first) // TODO: not add regular start but the one of the train
       path.reverse()
       return path
     } ?: return null
@@ -58,7 +68,8 @@ data class Transition(val departTime: Time, val destination: Node)
 
 data class StopTime(val stopSequence: Int, val id: NodeID, val arrival: Time, val departure: Time)
 
-class Schedule(private val map: Map<NodeID, List<Transition>>) {
+
+class Schedule(val map: Map<NodeID, List<Transition>>) {
 
   companion object {
     fun fromData(): Schedule {
