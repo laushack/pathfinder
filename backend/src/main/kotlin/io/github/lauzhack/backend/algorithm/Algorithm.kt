@@ -18,24 +18,24 @@ class Algorithm(private val schedule: Schedule) {
     priorityList.add(start)
 
     while (priorityList.isNotEmpty()) {
-        val current = priorityList.poll()
-        if (current.id == end) {
-            break
-        }
+      val current = priorityList.poll()
+      if (current.id == end) {
+        break
+      }
 
-        if (done.contains(current.id)) {
-            continue
-        }
-        done.add(current.id)
+      if (done.contains(current.id)) {
+        continue
+      }
+      done.add(current.id)
 
-        val neighbors = schedule.getDepartures(current.id, current.arrival)
-        for (neighbor in neighbors) {
-            //        println(neighbor)
-            if (!visited.containsKey(neighbor.id) || neighbor.arrival < visited[neighbor.id]!!.first.arrival) {
-                visited[neighbor.id] = Pair(neighbor, current.id)
-                priorityList.add(neighbor)
-            }
+      val neighbors = schedule.getDepartures(current.id, current.arrival)
+      for (neighbor in neighbors) {
+        if (!visited.containsKey(neighbor.id) ||
+            neighbor.arrival < visited[neighbor.id]!!.first.arrival) {
+          visited[neighbor.id] = Pair(neighbor, current.id)
+          priorityList.add(neighbor)
         }
+      }
     }
 
     visited[end]?.let {
@@ -50,7 +50,6 @@ class Algorithm(private val schedule: Schedule) {
       return path
     } ?: return null
   }
-
 }
 
 data class Node(val id: NodeID, val arrival: Time, val tripID: String)
@@ -58,7 +57,6 @@ data class Node(val id: NodeID, val arrival: Time, val tripID: String)
 data class Transition(val departTime: Time, val destination: Node)
 
 data class StopTime(val stopSequence: Int, val id: NodeID, val arrival: Time, val departure: Time)
-
 
 class Schedule(private val map: Map<NodeID, List<Transition>>) {
 
@@ -70,7 +68,7 @@ class Schedule(private val map: Map<NodeID, List<Transition>>) {
                   { it[Resources.StopTimes.TripId] },
                   {
                     try {
-                        StopTime(
+                      StopTime(
                           it[Resources.StopTimes.StopSequence].toInt(),
                           it[Resources.StopTimes.StopId].split(":")[0].toInt(),
                           timeToMinutes(it[Resources.StopTimes.ArrivalTime]),
@@ -81,13 +79,13 @@ class Schedule(private val map: Map<NodeID, List<Transition>>) {
                   })
               .flatMap {
                 // sort by sequence number
-                val nodesOnTrip = it.value.filterNotNull().sortedBy { i -> i.stopSequence}
+                val nodesOnTrip = it.value.filterNotNull().sortedBy { i -> i.stopSequence }
                 val noLast = nodesOnTrip.subList(0, nodesOnTrip.size - 1).withIndex()
                 // map all nodes to their neighbor
                 noLast.map { (n, node) ->
-                    val nextStop = nodesOnTrip[n + 1]
-                    val nextNode = Node(nextStop.id, nextStop.arrival, it.key)
-                    Pair(node.id, Transition(node.departure, nextNode))
+                  val nextStop = nodesOnTrip[n + 1]
+                  val nextNode = Node(nextStop.id, nextStop.arrival, it.key)
+                  Pair(node.id, Transition(node.departure, nextNode))
                 }
               }
               .groupBy({ it.first }, { it.second })
@@ -99,7 +97,7 @@ class Schedule(private val map: Map<NodeID, List<Transition>>) {
   fun getDepartures(node: NodeID, after: Time): Set<Node> {
     return map[node]
         // We don't wait more than 1 hour in one station
-        ?.filter { after <= it.departTime && it.departTime<= after + 60 }
+        ?.filter { after <= it.departTime && it.departTime <= after + 60 }
         ?.map { it.destination }
         ?.toSet() ?: emptySet()
   }

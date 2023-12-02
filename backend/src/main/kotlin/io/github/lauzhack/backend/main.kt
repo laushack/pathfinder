@@ -32,8 +32,8 @@ fun main() {
   val stGallen = 8506302
   val frib = 8504100
   val romont = 8504023
-  val start = frib
-  val end = romont
+  val start = vlv
+  val end = stGallen
 
   val startPoint = Node(start, timeToMinutes("10:20:00"), "")
 
