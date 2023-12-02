@@ -80,6 +80,21 @@ object Resources {
     fun data() = load("routes.txt")
   }
 
+  object StopTimesTrain {
+    val TripId = 0
+    val ArrivalTime = 1
+    val DepartureTime = 2
+    val StopId = 3
+    val StopSequence = 4
+    val PickupType = 5
+    val DropOffType = 6
+    val ShapeDistTraveled = 7
+    val AttributesCh = 8
+
+    /** Reads all the data from a file named `stop_times.txt` in the resource folder. */
+    fun data() = load("stop_times_20230606.txt")
+  }
+
   object StopTimes {
     val TripId = 0
     val ArrivalTime = 1
