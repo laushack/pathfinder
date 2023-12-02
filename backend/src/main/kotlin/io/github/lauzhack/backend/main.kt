@@ -5,6 +5,7 @@ package io.github.lauzhack.backend
 import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.api.openAI.OpenAIService
 import io.github.lauzhack.backend.data.Resources
+import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.backend.features.session.Session
 import io.github.lauzhack.backend.utils.ktor.deserializeFromFrame
 import io.github.lauzhack.backend.utils.ktor.serializeToFrame
@@ -94,10 +95,12 @@ private fun Application.sockets() {
   install(WebSockets) {
     contentConverter = KotlinxWebsocketSerializationConverter(DefaultJsonSerializer)
   }
+  val railService = RailService()
+
   routing {
     webSocket("/live") {
       val toSend = mutableListOf<BackendToUserMessage>()
-      val session = Session(toSend::add, OpenAIService())
+      val session = Session(toSend::add, OpenAIService(), railService)
       var keepGoing = true
       while (keepGoing) {
         if (toSend.isNotEmpty()) {
