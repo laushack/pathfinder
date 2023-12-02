@@ -35,19 +35,18 @@ fun main() {
   val romont = 8504023
   val start = vlv
   val end = stGallen
+  val startTime = timeToMinutes("10:20:00")
 
-  val startPoint = Node(start, timeToMinutes("10:20:00"), "")
-
-  var startTime = System.currentTimeMillis()
+  var time = System.currentTimeMillis()
   println("Building the schedule...")
   val schedule = Schedule.fromData()
-  println("Schedule done! (took ${System.currentTimeMillis() - startTime}ms)")
+  println("Schedule done! (took ${System.currentTimeMillis() - time}ms)")
 
-  startTime = System.currentTimeMillis()
+  time = System.currentTimeMillis()
   println("Running the algorithm")
   val algorithm = Algorithm(schedule)
-  val path = algorithm.run(startPoint, end)
-  println("Algorithm done! (took ${System.currentTimeMillis() - startTime}ms)")
+  val path = algorithm.run(start, startTime, end)
+  println("Algorithm done! (took ${System.currentTimeMillis() - time}ms)")
   path?.forEachIndexed { i, n ->
     println("$i: $n -> ${
     nameMap[n.id]
