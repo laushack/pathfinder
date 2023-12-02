@@ -30,16 +30,20 @@ import kotlinx.coroutines.selects.select
 fun main() {
   val vlv = 8501116
   val loz = 8501120
+  val stGallen = 8506302
   val startPoint = Node(vlv, 310, "")
 
+  var startTime = System.currentTimeMillis()
   println("Building the schedule...")
   val schedule = Schedule.build()
-  println("Schedule done!")
+  println("Schedule done! (took ${System.currentTimeMillis() - startTime}ms)")
 
+  startTime = System.currentTimeMillis()
   println("Running the algorithm")
   val algorithm = Algorithm(schedule)
-  val path = algorithm.run(startPoint, loz)
-  path.forEachIndexed { i, n -> println("$i: $n") }
+  val path = algorithm.run(startPoint, stGallen)
+  println("Algorithm done! (took ${System.currentTimeMillis() - startTime}ms)")
+  path?.forEachIndexed { i, n -> println("$i: $n") } ?: println("No path lol")
 
   val port = 8888
   embeddedServer(CIO, port = port) { application() }.start(wait = true)
