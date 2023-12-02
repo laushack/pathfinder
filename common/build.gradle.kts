@@ -14,6 +14,7 @@ kotlin {
         api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
         // Ktor (api.ktor.io)
+        api("io.ktor:ktor-client-auth:2.3.6")
         api("io.ktor:ktor-client-content-negotiation:2.3.6")
         api("io.ktor:ktor-client-json:2.3.6")
         api("io.ktor:ktor-client-serialization:2.3.6")
