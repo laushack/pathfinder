@@ -1,4 +1,4 @@
-package io.github.lauzhack.backend.openAI
+package io.github.lauzhack.backend.api.openAI
 
 import io.ktor.client.*
 import io.ktor.client.call.*

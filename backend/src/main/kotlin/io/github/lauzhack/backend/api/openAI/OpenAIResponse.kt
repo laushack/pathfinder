@@ -1,4 +1,4 @@
-package io.github.lauzhack.backend.openAI
+package io.github.lauzhack.backend.api.openAI
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
