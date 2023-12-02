@@ -40,6 +40,8 @@ fun ChatFloatingWindow(chat: ChatState) {
       spaceY(16f)
       shadowInner()
       bgColor(white)
+      overflowYScroll()
+      grow0()
     }
     Div(attrs = { classes(className) }) {
       chat.conversation.forEach { message ->
@@ -53,6 +55,15 @@ fun ChatFloatingWindow(chat: ChatState) {
         }
       }
     }
+    Div(
+        attrs = {
+          inlineTailwind {
+            h(1f)
+            wFull()
+            bgColor(cffPinkLightVeryLight)
+          }
+        },
+    )
     val suggestions = chat.conversation.lastOrNull()?.suggestions ?: emptyList()
     ChatInput(
         input = chat.input,
@@ -116,6 +127,7 @@ private fun ChatInput(
           flex()
           flexCol()
           bgColor(white)
+          shadowLg()
         }
         attrs?.invoke(this)
       },
@@ -156,6 +168,11 @@ private fun ChatInput(
             inlineTailwind { grow() }
             value(input)
             onInput { onInputChange(it.value) }
+            onKeyUp { event ->
+              if (event.code == "Enter") {
+                onSendClick()
+              }
+            }
           },
       )
       IconButton(
