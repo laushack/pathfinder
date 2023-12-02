@@ -3,9 +3,10 @@ package io.github.lauzhack.frontend.features.assistant
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import io.github.lauzhack.frontend.ui.Tokens.body1
-import io.github.lauzhack.frontend.ui.Tokens.cffPinkDark
-import io.github.lauzhack.frontend.ui.Tokens.cffPinkLightVeryLight
-import io.github.lauzhack.frontend.ui.Tokens.cffPinkVeryLight
+import io.github.lauzhack.frontend.ui.Tokens.cffPinkLight
+import io.github.lauzhack.frontend.ui.Tokens.cffRed
+import io.github.lauzhack.frontend.ui.Tokens.cffRedLight
+import io.github.lauzhack.frontend.ui.Tokens.cffRedVeryLight
 import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.material.*
 import io.github.lauzhack.frontend.ui.tailwind.*
@@ -24,12 +25,11 @@ fun ChatFloatingWindow(chat: ChatState) {
       attrs = {
         inlineTailwind {
           bgColor(white)
-          shadow()
           roundedXl()
-          maxWLg()
           flex()
           flexCol()
           overflowClip()
+          shadow()
         }
       },
   ) {
@@ -60,7 +60,7 @@ fun ChatFloatingWindow(chat: ChatState) {
           inlineTailwind {
             h(1f)
             wFull()
-            bgColor(cffPinkLightVeryLight)
+            bgColor(cffPinkLight)
           }
         },
     )
@@ -96,11 +96,15 @@ private fun ChatMessage(
           roundedXl()
           if (role == ChatState.Role.User) {
             me(48f)
-            bgColor(cffPinkLightVeryLight)
+            border(2f)
+            borderColor(cffRedLight)
+            borderDashed()
           } else {
             ms(48f)
-            bgColor(cffPinkVeryLight)
-            textColor(cffPinkDark)
+            bgColor(cffRedVeryLight)
+            border(2f)
+            borderColor(cffRed)
+            // borderDotted()
           }
         }
         attrs?.invoke(this)

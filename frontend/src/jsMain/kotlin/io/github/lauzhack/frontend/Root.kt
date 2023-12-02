@@ -23,14 +23,28 @@ fun DOMScope<HTMLBodyElement>.Root() {
               bgColor(cffPinkVeryLight)
               flex()
               flexCol()
+              wFull()
               hScreen()
               px(32f)
               py(16f)
             }
           },
       ) {
-        ChatFloatingWindow(rememberChatState())
-        Options(rememberOptionsState())
+        Div(
+            attrs = {
+              inlineTailwind {
+                grow()
+                overflowYScroll()
+                flex()
+                flexCol()
+                maxWLg()
+                gap(8f)
+              }
+            },
+        ) {
+          ChatFloatingWindow(rememberChatState())
+          Options(rememberOptionsState())
+        }
       }
     }
   }

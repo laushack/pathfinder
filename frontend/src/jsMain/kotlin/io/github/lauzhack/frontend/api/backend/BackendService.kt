@@ -68,6 +68,12 @@ class BackendService(
     toSend.trySend(UserToAssistantMessage(text))
   }
 
+  /** Sends the given [options] message to the backend. */
+  fun sendPlanningOptions(options: PlanningOptions) {
+    planningOptions = options
+    toSend.trySend(UserToAssistantSetPlanning(options))
+  }
+
   init {
     scope.launch {
       while (true) {

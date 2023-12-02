@@ -89,7 +89,11 @@ object Tokens {
   }
 
   // Color tokens
+  val cffTransparent = "#EB000000"
   val cffRed = "#EB0000"
+  val cffRedLight = "#EB000040"
+  val cffRedVeryLight = "#EB000010"
+
   val cffPinkLight = "#FFBCD9"
   val cffPinkLightVeryLight = "#FFBCD940"
   val cffPink = "#FF85A2"
@@ -105,5 +109,7 @@ object Tokens {
   val primary600 = "#00A67C"
   val primary700 = "#008967"
   val primary800 = "#006B59"
+
   val white = "#FFFFFF"
+  val black = "#000000"
 }
