@@ -2,10 +2,9 @@
 
 package io.github.lauzhack.backend
 
-import io.github.lauzhack.backend.algorithm.Algorithm
-import io.github.lauzhack.backend.algorithm.Node
-import io.github.lauzhack.backend.algorithm.Schedule
+import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.api.openAI.OpenAIService
+import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.features.session.Session
 import io.github.lauzhack.backend.utils.ktor.deserializeFromFrame
 import io.github.lauzhack.backend.utils.ktor.serializeToFrame
@@ -31,7 +30,11 @@ fun main() {
   val vlv = 8501116
   val loz = 8501120
   val stGallen = 8506302
-  val startPoint = Node(vlv, 310, "")
+  val frib = 8504100
+  val start = frib
+  val end = loz
+
+  val startPoint = Node(start, timeToMinutes("10:20:00"), "")
 
   var startTime = System.currentTimeMillis()
   println("Building the schedule...")
@@ -41,12 +44,26 @@ fun main() {
   startTime = System.currentTimeMillis()
   println("Running the algorithm")
   val algorithm = Algorithm(schedule)
-  val path = algorithm.run(startPoint, stGallen)
+  val path = algorithm.run(startPoint, end)
   println("Algorithm done! (took ${System.currentTimeMillis() - startTime}ms)")
-  path?.forEachIndexed { i, n -> println("$i: $n") } ?: println("No path lol")
+  path?.forEachIndexed { i, n -> println("$i: $n -> ${
+    nameMap[n.id]
+  } -- ${minutesToTime(n.time)}") }
+      ?: println("No path lol")
 
   val port = 8888
   embeddedServer(CIO, port = port) { application() }.start(wait = true)
+}
+
+private val nameMap: Map<NodeID, String> =
+    Resources.Stops.data().associate {
+      it[Resources.Stops.StopId].split(":")[0].toInt() to it[Resources.Stops.StopName]
+    }
+
+private fun minutesToTime(minutes: Time): String {
+  val hours = minutes / 60
+  val minutes = minutes % 60
+  return "%02d:%02d:00".format(hours, minutes)
 }
 
 /** Configures the application. */
