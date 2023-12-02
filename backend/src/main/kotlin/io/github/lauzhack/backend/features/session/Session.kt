@@ -8,6 +8,7 @@ import io.github.lauzhack.common.QueryParameters
 import io.github.lauzhack.common.api.*
 import io.github.lauzhack.common.api.AssistantRole.Assistant
 import io.github.lauzhack.common.api.AssistantRole.User
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class Session(
@@ -15,41 +16,34 @@ class Session(
     private val openAIService: OpenAIService,
 ) {
 
-  private val userConversation =
-      mutableListOf(OpenAIMessage(role = "system", content = Resources.Prompt.UserPrompt))
+  private val conversation = mutableListOf<OpenAIMessage>()
 
-  private val queryConversation =
-      mutableListOf(OpenAIMessage(role = "system", content = Resources.Prompt.QueryPrompt))
-
-  private fun printUserConversation() {
-    println("User conversation: ===============")
-    userConversation.forEach {
+  private fun printConversation() {
+    println("Conversation: ===============")
+    conversation.forEach {
       println("=======================")
       println("Role: ${it.role}")
       println("Content: ${it.content}")
       println("=======================")
     }
-    println("User conversation END: =======================")
-  }
-
-  private fun printQueryConversation() {
-    println("Query conversation: ===============")
-    queryConversation.forEach {
-      println("=======================")
-      println("Role: ${it.role}")
-      println("Content: ${it.content}")
-      println("=======================")
-    }
-    println("Query conversation END: =======================")
+    println("Conversation END: =======================")
   }
 
   suspend fun process(message: UserToBackendMessage) {
     when (message) {
       is UserToAssistantMessage -> {
-        userConversation.add(
-            OpenAIMessage(role = "user", content = message.text),
-        )
-        val response = openAIService.prompt(OpenAIRequest(messages = userConversation))
+
+        val askForJsonOutputPrompt = Resources.Prompt.UserPrompt
+        val askForResponsePrompt = Resources.Prompt.QueryPrompt
+
+        conversation.add(OpenAIMessage(role = "user", content = message.text))
+        val response =
+            openAIService.prompt(
+                OpenAIRequest(
+                    messages =
+                        conversation +
+                            OpenAIMessage(role = "system", content = askForJsonOutputPrompt)),
+            )
         val choices = response.choices
         if (choices.isNotEmpty()) {
           val first = choices.first().message
@@ -57,29 +51,34 @@ class Session(
 
           val queryParameters: QueryParameters? =
               try {
-                Json.decodeFromString(QueryParameters.serializer(), json)
+                val current =
+                    Json {
+                          isLenient = true
+                          ignoreUnknownKeys = true
+                        }
+                        .decodeFromString(QueryParameters.serializer(), json)
+                println(current)
+                current
               } catch (e: Exception) {
                 println("Error: $e")
                 null // Explicitly return null in case of an exception
               }
 
+          val currentJson =
+              queryParameters?.let {
+                Json { this.prettyPrint = true }.encodeToString<QueryParameters>(it)
+              } ?: "{}"
+
+          val prompt = askForResponsePrompt.replace("\$INJECT_CURRENT_JSON\$", currentJson)
+          val response2 =
+              openAIService.prompt(
+                  OpenAIRequest(
+                      messages = conversation + OpenAIMessage(role = "system", content = prompt)))
+
           // Asking chatGPT to generate a response for missing info
-          queryConversation.add(
-              OpenAIMessage(
-                  role = "user",
-                  content = json,
-              ),
-          )
+          val question = response2.choices.first().message.content
 
-          val question =
-              openAIService
-                  .prompt(OpenAIRequest(messages = queryConversation))
-                  .choices
-                  .first()
-                  .message
-                  .content
-
-          userConversation.add(
+          conversation.add(
               OpenAIMessage(
                   role = "assistant",
                   content = question,
@@ -88,7 +87,7 @@ class Session(
 
           enqueue(
               AssistantToUserConversation(
-                  userConversation
+                  conversation
                       .filter { it.role == "assistant" || it.role == "user" }
                       .map {
                         AssistantToUserMessage(
@@ -98,8 +97,7 @@ class Session(
                       },
               ))
 
-          printUserConversation()
-          printQueryConversation()
+          printConversation()
         }
       }
     }
