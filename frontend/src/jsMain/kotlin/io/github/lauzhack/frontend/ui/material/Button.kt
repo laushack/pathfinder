@@ -42,6 +42,21 @@ fun Button(
   }
 }
 
+/** A Material-designed icon button. */
+@Composable
+fun IconButton(
+    attrs: AttrBuilderContext<HTMLButtonElement>? = null,
+    content: ContentBuilder<HTMLButtonElement>? = null,
+) {
+  Styled({ a, c -> CoreButton(a, c) }, attrs, content) {
+    buttonStyle()
+    roundedFull()
+    p(4f)
+    hover { bgColor("#F5F6FA") }
+    transitionAll()
+  }
+}
+
 private fun TailwindScope.buttonStyle() {
   cursorAuto()
   selectNone()

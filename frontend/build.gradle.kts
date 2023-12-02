@@ -14,6 +14,7 @@ kotlin {
         implementation(project(":common"))
         implementation(compose.runtime)
         implementation(compose.html.core)
+        implementation(compose.html.svg)
 
         // Ktor (api.ktor.io)
         implementation("io.ktor:ktor-client-js:2.3.6")
