@@ -15,6 +15,19 @@ object Resources {
           .apply { skip(1) } // Skips the header row.
           .readAll()
 
+  private fun loadText(file: String) =
+      this::class
+          .java
+          .classLoader
+          .getResourceAsStream(file)!!
+          .reader()
+          .readText()
+
+  object Prompt {
+    val QueryPrompt = loadText("QueryPrompt.prompt")
+    val UserPrompt = loadText("UserPrompt.prompt")
+  }
+
   /** Contains the data from the `agency.txt` file. */
   object Agency {
 
