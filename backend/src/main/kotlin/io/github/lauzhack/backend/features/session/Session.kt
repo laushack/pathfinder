@@ -1,10 +1,7 @@
 package io.github.lauzhack.backend.features.session
 
 import io.github.lauzhack.backend.algorithm.timeToMinutes
-import io.github.lauzhack.backend.api.openAI.OpenAIMessage
-import io.github.lauzhack.backend.api.openAI.OpenAIRequest
-import io.github.lauzhack.backend.api.openAI.OpenAIResponse
-import io.github.lauzhack.backend.api.openAI.OpenAIService
+import io.github.lauzhack.backend.api.openAI.*
 import io.github.lauzhack.backend.data.Resources.Prompt.ExtractJsonFromUserMessagePrompt
 import io.github.lauzhack.backend.data.Resources.Prompt.GenerateQuestionForMissingJsonPrompt
 import io.github.lauzhack.backend.features.railService.RailService
@@ -18,6 +15,7 @@ class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
     private val openAIService: OpenAIService,
     private val railService: RailService,
+    private val openStreetMapService: OpenStreetMapService
 ) {
 
   private var currentPlanning = PlanningOptions()
