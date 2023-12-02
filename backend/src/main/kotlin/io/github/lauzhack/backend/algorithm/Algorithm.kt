@@ -8,19 +8,20 @@ typealias NodeID = Int
 typealias Time = Long
 
 class Algorithm(private val schedule: Schedule) {
-  fun run(start: Node, end: NodeID): List<Node>? {
+  fun run(startID: NodeID, startTime: Time, endID: NodeID): List<Node>? {
     val pairComparator = Comparator<Node> { a, b -> (a.arrival - b.arrival).toInt() }
     val priorityList = PriorityQueue(pairComparator)
     // map containing the visited nodes along with the time it took to get there
     val visited = mutableMapOf<NodeID, Pair<Node, NodeID>>()
     val done = mutableSetOf<NodeID>()
 
+    val start = Node(startID, startTime, "")
     priorityList.add(start)
     visited[start.id] = Pair(start, start.id)
 
     while (priorityList.isNotEmpty()) {
       val current = priorityList.poll()
-      if (current.id == end) {
+      if (current.id == endID) {
         break
       }
 
@@ -40,7 +41,7 @@ class Algorithm(private val schedule: Schedule) {
       }
     }
 
-    visited[end]?.let {
+    visited[endID]?.let {
       val path = mutableListOf<Node>()
       var current = it
       while (current.first.id != start.id) {
@@ -67,7 +68,6 @@ data class Node(val id: NodeID, val arrival: Time, val tripID: String)
 data class Transition(val departTime: Time, val destination: Node)
 
 data class StopTime(val stopSequence: Int, val id: NodeID, val arrival: Time, val departure: Time)
-
 
 class Schedule(val map: Map<NodeID, List<Transition>>) {
 
