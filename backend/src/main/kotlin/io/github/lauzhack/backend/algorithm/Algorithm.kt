@@ -8,7 +8,7 @@ typealias NodeID = Int
 typealias Time = Long
 
 class Algorithm(private val schedule: Schedule) {
-  fun run(start: Node, end: NodeID): List<Node> {
+  fun run(start: Node, end: NodeID): List<Node>? {
     val pairComparator = Comparator<Node> { a, b -> (a.time - b.time).toInt() }
     val priorityList = PriorityQueue(pairComparator)
     // map containing the visited nodes along with the time it took to get there
@@ -37,15 +37,17 @@ class Algorithm(private val schedule: Schedule) {
       }
     }
 
-    val path = mutableListOf<Node>()
-    var current = Node(end, visited[end]!!.first, "") // TODO: correct tripID
-    while (current.id != start.id) {
-      path.add(current)
-      current = visited[current.id]!!.second
-    }
-    path.add(start)
-    path.reverse()
-    return path
+    visited[end]?.let {
+      val path = mutableListOf<Node>()
+      var current = Node(end, it.first, "") // TODO: correct tripID
+      while (current.id != start.id) {
+        path.add(current)
+        current = visited[current.id]!!.second
+      }
+      path.add(start)
+      path.reverse()
+      return path
+    } ?: return null
   }
 
   private fun getNeighbors(node: Node): Set<Node> {
@@ -92,7 +94,7 @@ class Schedule(private val map: Map<NodeID, List<Node>>) {
   }
 
   fun getDepartures(node: Node, from: Time): Set<Node> {
-    return map[node.id]!!.filter { from <= it.time && it.time <= from + 60 }.toSet()
+    return map[node.id]?.filter { from <= it.time && it.time <= from + 60 }?.toSet() ?: emptySet()
   }
 }
 
