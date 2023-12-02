@@ -66,7 +66,6 @@ class BackendService(
   fun sendChatMessage(text: String) {
     conversation = conversation + AssistantToUserMessage(role = AssistantRole.User, text = text)
     toSend.trySend(UserToAssistantMessage(text))
-    println("Enqueued a message")
   }
 
   init {
