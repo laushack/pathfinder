@@ -3,10 +3,9 @@ package io.github.lauzhack.backend.features.session
 import io.github.lauzhack.backend.api.openAI.OpenAIMessage
 import io.github.lauzhack.backend.api.openAI.OpenAIRequest
 import io.github.lauzhack.backend.api.openAI.OpenAIService
-import io.github.lauzhack.common.api.AssistantToUserMessage
-import io.github.lauzhack.common.api.BackendToUserMessage
-import io.github.lauzhack.common.api.UserToAssistantMessage
-import io.github.lauzhack.common.api.UserToBackendMessage
+import io.github.lauzhack.common.api.*
+import io.github.lauzhack.common.api.AssistantRole.Assistant
+import io.github.lauzhack.common.api.AssistantRole.User
 
 class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
@@ -30,7 +29,17 @@ class Session(
         if (choices.isNotEmpty()) {
           val first = choices.first().message
           conversation.add(first)
-          enqueue(AssistantToUserMessage(first.content))
+          enqueue(
+              AssistantToUserConversation(
+                  conversation
+                      .filter { it.role == "assistant" || it.role == "user" }
+                      .map {
+                        AssistantToUserMessage(
+                            role = if (it.role == "user") User else Assistant,
+                            text = it.content,
+                        )
+                      },
+              ))
         }
       }
     }
