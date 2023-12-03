@@ -21,6 +21,7 @@ kotlin {
 
         // Mapbox (docs.mapbox.com/mapbox-gl-js/api/)
         implementation(npm("mapbox-gl", "3.0.0"))
+        implementation(npm("@turf/turf", "6.5.0"))
       }
     }
   }

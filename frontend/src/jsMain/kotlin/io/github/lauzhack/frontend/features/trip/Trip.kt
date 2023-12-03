@@ -27,6 +27,7 @@ fun Trip(trip: Trip, attrs: AttrBuilderContext<HTMLDivElement>? = null) {
           flexCol()
           p(16f)
           gap(16f)
+          overflowYScroll()
         }
         attrs?.invoke(this)
       },

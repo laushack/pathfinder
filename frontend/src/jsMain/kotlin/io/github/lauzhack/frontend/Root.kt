@@ -78,6 +78,7 @@ fun DOMScope<HTMLBodyElement>.Root() {
                     overflowYScroll()
                     maxWSm()
                     selfStart()
+                    grow0()
                   }
                 },
             )
