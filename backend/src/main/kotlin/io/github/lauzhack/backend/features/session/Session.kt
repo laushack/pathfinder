@@ -1,10 +1,7 @@
 package io.github.lauzhack.backend.features.session
 
 import io.github.lauzhack.backend.algorithm.timeToMinutes
-import io.github.lauzhack.backend.api.openAI.OpenAIMessage
-import io.github.lauzhack.backend.api.openAI.OpenAIRequest
-import io.github.lauzhack.backend.api.openAI.OpenAIResponse
-import io.github.lauzhack.backend.api.openAI.OpenAIService
+import io.github.lauzhack.backend.api.openAI.*
 import io.github.lauzhack.backend.data.Resources.Prompt.ExtractJsonFromUserMessagePrompt
 import io.github.lauzhack.backend.data.Resources.Prompt.GenerateQuestionForMissingJsonPrompt
 import io.github.lauzhack.backend.features.railService.RailService
@@ -14,10 +11,13 @@ import io.github.lauzhack.common.api.AssistantRole.User
 import io.github.lauzhack.common.api.PlanningOptions
 import kotlinx.serialization.encodeToString
 
+class EarlyAbortException : Exception()
+
 class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
     private val openAIService: OpenAIService,
     private val railService: RailService,
+    private val openStreetMapService: OpenStreetMapService
 ) {
 
   private var currentPlanning = PlanningOptions()
@@ -32,7 +32,12 @@ class Session(
 
   suspend fun process(message: UserToBackendMessage) {
     when (message) {
-      is UserToAssistantMessage -> handleUserToAssistantMessage(message)
+      is UserToAssistantMessage ->
+          try {
+            handleUserToAssistantMessage(message)
+          } catch (e: EarlyAbortException) {
+            println("Aborting early")
+          }
       is UserToAssistantSetPlanning -> currentPlanning = message.planningOptions
     }
   }
@@ -56,24 +61,42 @@ class Session(
     enqueuePlanningToUser()
   }
 
-  private fun updatePlanning(json: String) {
+  private suspend fun updatePlanning(json: String) {
     val extracted = DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
     currentPlanning = currentPlanning.updatedWith(extracted)
 
     if (currentPlanning.isSufficient()) {
-      println("Planning is sufficient, computing trip...")
+      println("Sufficient planning")
       computeAndSendTrip()
     }
   }
 
-  private fun computeAndSendTrip() {
-    val startStationId = railService.getStartStationId()
-    val endStationId = railService.getEndStationId()
-    val startTime = timeToMinutes(currentPlanning.startTime!!)
+  private suspend fun computeAndSendTrip() {
+    val startLocation = openStreetMapService.getLatLong(currentPlanning.startLocation!!)
+    val endLocation = openStreetMapService.getLatLong(currentPlanning.endLocation!!)
 
-    val path = railService.computePath(startStationId, startTime, endStationId)
-    val trip = railService.pathToString(path)
-    println("Computed trip: $trip")
+    if (startLocation == null || endLocation == null) {
+      println(
+          "Could not find location for ${currentPlanning.startLocation} or ${currentPlanning.endLocation}")
+      updateConversation(
+          "Could not find start location ${currentPlanning.startLocation}, or end location ${currentPlanning.endLocation}. Please try other locations",
+          ROLE_ASSISTANT)
+      currentPlanning.invalidateStartLocation()
+      currentPlanning.invalidateEndLocation()
+      enqueueConversationToUser()
+      throw EarlyAbortException()
+    }
+
+    println("Computing trip from $startLocation to $endLocation")
+
+    val trip =
+        railService.computePath(
+            startLocation = startLocation,
+            endLocation = endLocation,
+            startTime = timeToMinutes(currentPlanning.startTime!!),
+        )
+    //            ?.let { railService.pathToString(it) } ?: "No path found"
+
     enqueueTripToUser(trip)
   }
 
@@ -84,11 +107,11 @@ class Session(
       openAIService.prompt(
           OpenAIRequest(messages = conversation + OpenAIMessage(role = role, content = prompt)))
 
-  private fun updateConversation(question: String, role: String) {
+  private fun updateConversation(message: String, role: String) {
     conversation.add(
         OpenAIMessage(
             role = role,
-            content = question,
+            content = message,
         ),
     )
   }
@@ -108,14 +131,13 @@ class Session(
   }
 
   private fun enqueuePlanningToUser() {
-    println("Updated planning: $currentPlanning")
     enqueue(
         AssistantToUserSetPlanning(
             planningOptions = currentPlanning,
         ))
   }
 
-  private fun enqueueTripToUser(path: String) {
-    enqueue(BackendToUserSetTrip(Trip(emptyList())))
+  private fun enqueueTripToUser(trip: Trip) {
+    enqueue(BackendToUserSetTrip(trip))
   }
 }

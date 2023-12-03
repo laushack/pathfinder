@@ -4,6 +4,7 @@ package io.github.lauzhack.backend
 
 import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.api.openAI.OpenAIService
+import io.github.lauzhack.backend.api.openAI.OpenStreetMapService
 import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.backend.features.session.Session
@@ -28,31 +29,6 @@ import kotlinx.coroutines.selects.select
 
 /** The main entry point for the backend. */
 fun main() {
-  val vlv = 8501116
-  val loz = 8501120
-  val stGallen = 8506302
-  val frib = 8504100
-  val romont = 8504023
-  val start = vlv
-  val end = stGallen
-  val startTime = timeToMinutes("10:20:00")
-
-  var time = System.currentTimeMillis()
-  println("Building the schedule...")
-  val schedule = Schedule.fromData()
-  println("Schedule done! (took ${System.currentTimeMillis() - time}ms)")
-
-  time = System.currentTimeMillis()
-  println("Running the algorithm")
-  val algorithm = Algorithm(schedule)
-  val path = algorithm.run(start, startTime, end)
-  println("Algorithm done! (took ${System.currentTimeMillis() - time}ms)")
-  path?.forEachIndexed { i, n ->
-    println("$i: $n -> ${
-    nameMap[n.id]
-  } -- ${minutesToTime(n.arrival)}")
-  } ?: println("No path lol")
-
   val port = 8888
   embeddedServer(CIO, port = port) { application() }.start(wait = true)
 }
@@ -100,7 +76,7 @@ private fun Application.sockets() {
   routing {
     webSocket("/live") {
       val toSend = mutableListOf<BackendToUserMessage>()
-      val session = Session(toSend::add, OpenAIService(), railService)
+      val session = Session(toSend::add, OpenAIService(), railService, OpenStreetMapService())
       var keepGoing = true
       while (keepGoing) {
         if (toSend.isNotEmpty()) {
