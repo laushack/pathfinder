@@ -131,8 +131,8 @@ object Resources {
   object Stops {
     val StopId = 0
     val StopName = 2
-    val StopLat = 2
-    val StopLon = 3
+    val StopLat = 4
+    val StopLon = 5
     val LocationType = 4
     val ParentStation = 5
 

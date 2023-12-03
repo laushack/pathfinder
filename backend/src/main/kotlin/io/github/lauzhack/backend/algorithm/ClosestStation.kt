@@ -16,9 +16,14 @@ class ClosestStationAlgorithm(val stations: List<Station>) {
   companion object {
     fun fromData(): ClosestStationAlgorithm {
       val stationData =
-          Resources.Stops.data().map {
+          Resources.Stops.data().mapNotNull {
+            try {
             val location = Location(it[StopLat].trim().toDouble(), it[StopLon].trim().toDouble())
-            Station(it[StopId].toInt(), location)
+            Station(it[StopId].split(':')[0].toInt(), location)
+            } catch (e: Exception) {
+              println("Error parsing station ${it[StopId]}  lat ${it[StopLat]} lon ${it[StopLon]} error ${e.message}")
+              null
+            }
           }
       return ClosestStationAlgorithm(stationData)
     }
