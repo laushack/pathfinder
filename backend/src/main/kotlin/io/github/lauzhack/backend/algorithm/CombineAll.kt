@@ -60,8 +60,8 @@ class CombineAllAlgorithm(
   }
 
   private fun minutesToTime(minutes: Time): String {
-    val hours = minutes / 60
-    val minutes = minutes % 60
-    return "%02d:%02d:00".format(hours, minutes)
+    val h = minutes / 60
+    val m = minutes % 60
+    return "%02d:%02d".format(h, m)
   }
 }
