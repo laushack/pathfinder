@@ -15,6 +15,9 @@ import org.w3c.dom.HTMLDivElement
 val MapBoxToken =
     "pk.eyJ1IjoiYWxleGFuZHJlcGl2ZXRlYXVlcGZsIiwiYSI6ImNscG9xbzI1YzB1bjIyaXA2cTFmcjU5cWIifQ.xeUfLjWhZJfdNlsbowshyQ"
 
+/** The coordinates of EPFL. */
+val EPFLCoordinates = arrayOf(6.5593, 46.5188)
+
 @Composable
 fun MapBox(
     attrs: AttrBuilderContext<HTMLDivElement>? = null,
@@ -27,13 +30,15 @@ fun MapBox(
       },
   ) {
     DisposableEffect(Unit, trip) {
+      // TODO: This makes the first stop at center, often behind the UI
+      val centerOfFirstStop = trip?.stops?.firstOrNull()?.let { arrayOf(it.longitude, it.latitude) }
       val map =
           mapbox.Map(
               MapOptions {
                 accessToken = MapBoxToken // set access token
                 container = "map" // container ID
                 style = "mapbox://styles/mapbox/streets-v12" // style URL
-                center = arrayOf(6.5593, 46.5188) // starting position [lng, lat]
+                center = centerOfFirstStop ?: EPFLCoordinates // starting position [lng, lat]
                 zoom = 9.0 // starting zoom
               },
           )
