@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Trip(
+    val pprData: PPRData?,
     val stops: List<TripStop>,
 )
 
@@ -17,7 +18,7 @@ fun Trip.compact(): CompactTrip {
   return CompactTrip(
       subTrips.values
           .sortedBy { it.first().first }
-          .map { Trip(it.map { it.second }) }
+          .map { Trip(null, it.map { it.second }) }
           .filter { it.stops.size > 1 })
 }
 
@@ -37,3 +38,17 @@ data class TripStop(
 data class BackendToUserSetTrip(
     val trip: Trip,
 ) : BackendToUserMessage()
+
+@Serializable
+data class PPRData(
+    val priceDay: Double,
+    val priceMonth: Double,
+    val priceYear: Double,
+    val capacity: Int,
+    val latitude: Double,
+    val longitude: Double,
+    // In minutes
+    val timeByFeet: Int,
+    val openingTime: String,
+    val closingTime: String,
+)
