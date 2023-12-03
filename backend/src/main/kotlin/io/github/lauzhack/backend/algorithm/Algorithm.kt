@@ -52,7 +52,11 @@ class Algorithm(private val schedule: Schedule) {
         path.add(current)
         current = visited[current.previous]!!
       }
-      path.add(current.copy(previousDeparture = path.last().previousDeparture))
+      val last = path.last()
+      path.add(
+          current.copy(
+              previousDeparture = last.previousDeparture,
+              node = current.node.copy(tripID = last.node.tripID)))
       var previous: Visited? = null
       return path
           .map { v ->
