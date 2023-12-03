@@ -63,6 +63,8 @@ private val nameMap: Map<NodeID, String> =
       it[Resources.Stops.StopId].split(":")[0].toInt() to it[Resources.Stops.StopName]
     }
 
+private val railService = RailService()
+
 private fun minutesToTime(minutes: Time): String {
   val hours = minutes / 60
   val minutes = minutes % 60
@@ -95,7 +97,6 @@ private fun Application.sockets() {
   install(WebSockets) {
     contentConverter = KotlinxWebsocketSerializationConverter(DefaultJsonSerializer)
   }
-  val railService = RailService()
 
   routing {
     webSocket("/live") {

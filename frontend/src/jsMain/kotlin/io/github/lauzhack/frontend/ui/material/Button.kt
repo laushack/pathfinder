@@ -1,12 +1,12 @@
 package io.github.lauzhack.frontend.ui.material
 
 import androidx.compose.runtime.Composable
-import io.github.lauzhack.frontend.ui.Tokens.primary100
-import io.github.lauzhack.frontend.ui.Tokens.primary150
+import io.github.lauzhack.frontend.ui.Tokens.cffPink
+import io.github.lauzhack.frontend.ui.Tokens.cffRed
+import io.github.lauzhack.frontend.ui.Tokens.cffTransparent
 import io.github.lauzhack.frontend.ui.Tokens.primary500
 import io.github.lauzhack.frontend.ui.Tokens.primary600
 import io.github.lauzhack.frontend.ui.Tokens.primary700
-import io.github.lauzhack.frontend.ui.Tokens.primaryTransparent
 import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.AttrBuilderContext
@@ -83,18 +83,18 @@ private fun InlineTailwindScope.buttonTextStyle() {
 }
 
 private fun TailwindScope.buttonFlatColorStyle() {
-  textColor(primary500)
-  bgColor(primaryTransparent)
-  border(0)
-  hover { bgColor(primary100) }
-  active { bgColor(primary150) }
+  textColor(cffRed)
+  bgColor(cffTransparent)
+  border(0f)
+  hover { bgColor(cffPink) }
+  active { bgColor(cffPink) }
   transitionAll()
 }
 
 private fun TailwindScope.buttonRaisedColorStyle() {
   bgColor(primary500)
   textColor(white)
-  border(0)
+  border(0f)
   dropShadow()
   hover {
     bgColor(primary600)

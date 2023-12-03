@@ -34,6 +34,8 @@ fun PlanningOptions.updatedWith(other: PlanningOptions): PlanningOptions =
         subscription = other.subscription ?: subscription,
     )
 
-fun PlanningOptions.isSufficient(): Boolean = listOf(startLocation, endLocation, startTime).all { it != null }
+fun PlanningOptions.isSufficient(): Boolean =
+    listOf(startLocation, endLocation, startTime).all { it != null }
 
-fun PlanningOptions.isComplete(): Boolean = listOf(startLocation, endLocation, startTime, date, endTime, subscription).all { it != null }
+fun PlanningOptions.isComplete(): Boolean =
+    listOf(startLocation, endLocation, startTime, date, endTime, subscription).all { it != null }
