@@ -13,8 +13,9 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
   /**
    * Returns the reasonably closest PPRs to the given location, and the estimated time to go there.
    */
-  fun findClosestPPR(location: Location): List<Pair<PPR, Time>> {
+  fun findClosestPPR(location: Location, time: Time): List<Pair<PPR, Time>> {
     return pprData
+        .filter { ppr -> ppr.bindingTime?.contains(time) ?: true }
         .sortedBy { ppr -> distance(location, ppr.location) }
         .take(5)
         .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toLong()) }
@@ -25,10 +26,23 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
     fun fromData(): ClosestPPRAlgorithm {
       val pprData =
           Resources.Mobilitat.data().map {
-            val location = parseGeoPos(it[Geopos])
-            PPR(it[OPUIC].toInt(), location)
+            PPR(
+                it[OPUIC].toInt(),
+                parseGeoPos(it[Geopos]),
+                stringToBindingTime(it[Resources.Mobilitat.ParkrailBindingTime1]))
           }
       return ClosestPPRAlgorithm(pprData)
+    }
+
+    private fun stringToBindingTime(time: String): BindingTime? {
+      val split = time.split('-')
+      if (split.isEmpty()) {
+        return null
+      }
+
+      val from = timeToMinutes(split[0].trim())
+      val to = timeToMinutes(split[1].trim())
+      return BindingTime(from, to)
     }
   }
 }
@@ -41,7 +55,7 @@ fun parseGeoPos(location: String): Location {
 }
 
 /** Each park plus rail points, parsed from Mobilitat.csv. */
-data class PPR(val stationId: Int, val location: Location)
+data class PPR(val stationId: Int, val location: Location, val bindingTime: BindingTime?)
 
 data class Location(val lat: Double, val lon: Double)
 
@@ -57,4 +71,10 @@ fun distance(a: Location, b: Location): Double {
   val y = 2 * atan2(sqrt(x), sqrt(1 - x))
 
   return R * y
+}
+
+data class BindingTime(val from: Time, val to: Time) {
+  fun contains(time: Time): Boolean {
+    return time in from..to
+  }
 }
