@@ -36,7 +36,6 @@ class OpenAIService(apiKey: String = OpenAIApiKey) {
   /** Sends a prompt to the OpenAI API and returns the response. */
   suspend fun prompt(request: OpenAIRequest): OpenAIResponse {
     return retryWithExponentialDelay {
-      println("prompt: $request")
       client
           .post("/v1/chat/completions") {
             contentType(ContentType.Application.Json)

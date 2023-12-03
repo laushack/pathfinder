@@ -100,6 +100,8 @@ object Tokens {
   val cffPinkVeryLight = "#FF85A240"
   val cffPinkDark = "#C44F6F"
 
+  val blue = "#0000EB"
+
   val primaryTransparent: String = "#0BD98600"
   val primaryAccent = "#0BD986"
   val primary100 = "#E5F9F2"
