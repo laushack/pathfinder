@@ -11,7 +11,7 @@ class RailService {
     val shortestPaths = combinedAlgo.computeShortestPath(startLocation, endLocation, startTime)
     if (shortestPaths.isEmpty()) {
       println("Empty closestPPR")
-      return Trip(emptyList())
+      return Trip(pprData = null, emptyList())
     }
     return shortestPaths.minBy {
       it.stops.last().arrivalTime?.let { t -> timeToMinutes(t) } ?: Time.MAX_VALUE

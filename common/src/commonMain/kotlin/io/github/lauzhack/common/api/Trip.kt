@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Trip(
+    val pprData: PPRData?,
     val stops: List<TripStop>,
 )
 

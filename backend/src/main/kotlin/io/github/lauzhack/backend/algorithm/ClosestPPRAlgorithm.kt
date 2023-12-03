@@ -27,6 +27,7 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
    */
   fun findClosestPPR(
       location: Location,
+      time: Time,
       optimization: OptimizePrice = OptimizePrice.NONE,
   ): List<Pair<PPR, Time>> {
     val totalDistance = pprData.sumOf { distance(location, it.location) }
@@ -40,6 +41,7 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
           }
         }
     return pprData
+        .filter { ppr -> ppr.bindingTime?.contains(time) ?: true }
         .sortedBy { ppr -> score(ppr, location, optimization, totalDistance, totalCost) }
         .take(5)
         .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toLong()) }
@@ -76,18 +78,35 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
                 } catch (e: Exception) {
                   0
                 }
-            PPR(id, location, priceDay, priceMonth, priceYear, capacity)
+            val bindingTime = stringToBindingTime(it[Resources.Mobilitat.ParkrailBindingTime1])
+            PPR(id, location, priceDay, priceMonth, priceYear, capacity, bindingTime)
           }
       return ClosestPPRAlgorithm(pprData)
     }
-  }
-}
 
-fun parseGeoPos(location: String): Location {
-  val split = location.split(',')
-  val lat = split[0].trim().toDouble()
-  val lon = split[1].trim().toDouble()
-  return Location(lat, lon)
+    private fun stringToBindingTime(time: String): BindingTime? {
+      val split = time.split('-')
+      if (split.isEmpty()) {
+        return null
+      }
+
+      return try {
+        val delimiter = '.'
+        val from = timeToMinutes(split[0].trim(), delimiter)
+        val to = timeToMinutes(split[1].trim(), delimiter)
+        BindingTime(from, to)
+      } catch (e: NumberFormatException) {
+        null
+      }
+    }
+
+    private fun parseGeoPos(location: String): Location {
+      val split = location.split(',')
+      val lat = split[0].trim().toDouble()
+      val lon = split[1].trim().toDouble()
+      return Location(lat, lon)
+    }
+  }
 }
 
 /** Each park plus rail points, parsed from Mobilitat.csv. */
@@ -98,6 +117,7 @@ data class PPR(
     val priceMonth: Double,
     val priceYear: Double,
     val capacity: Int,
+    val bindingTime: BindingTime?,
 )
 
 fun toPPRData(ppr: PPR, stationLocation: Location): PPRData {
@@ -110,8 +130,15 @@ fun toPPRData(ppr: PPR, stationLocation: Location): PPRData {
       ppr.location.lat,
       ppr.location.lon,
       timeByFeet.toInt(),
-      "",
-      "")
+      ppr.bindingTime?.from?.let { minutesToTime(it) } ?: "",
+      ppr.bindingTime?.to?.let { minutesToTime(it) } ?: "")
+}
+
+
+fun minutesToTime(minutes: Time): String {
+    val hours = minutes / 60
+    val minutes = minutes % 60
+    return "%02d:%02d:00".format(hours, minutes)
 }
 
 data class Location(val lat: Double, val lon: Double)
@@ -148,4 +175,10 @@ fun score(
   val W_D = 0.6
   val W_P = 0.4
   return W_D * distance + W_P * price
+}
+
+data class BindingTime(val from: Time, val to: Time) {
+  fun contains(time: Time): Boolean {
+    return time in from..to
+  }
 }

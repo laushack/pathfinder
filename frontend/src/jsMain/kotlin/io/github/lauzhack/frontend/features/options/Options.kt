@@ -65,7 +65,27 @@ fun OptionsMinimized(
       state.startTime?.let { OptionPill(Icons.TripTimeIcon, it) }
       state.subscription?.let { OptionPill(Icons.TripSubscription, it) }
     }
-    OutlinedButton(attrs = { onClick { state.onToggleModeClick() } }) { Text("Edit") }
+    Div(
+        attrs = {
+          inlineTailwind {
+            flex()
+            flexRow()
+            bgColor(white)
+            shadow()
+            roundedLg()
+          }
+        },
+    ) {
+      OutlinedButton(
+          attrs = {
+            onClick { state.onToggleModeClick() }
+            inlineTailwind { gap(8f) }
+          },
+      ) {
+        Icon(Icons.Edit)
+        Text("Edit")
+      }
+    }
   }
 }
 

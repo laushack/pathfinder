@@ -52,7 +52,11 @@ class Algorithm(private val schedule: Schedule) {
         path.add(current)
         current = visited[current.previous]!!
       }
-      path.add(current.copy(previousDeparture = path.last().previousDeparture))
+      val last = path.last()
+      path.add(
+          current.copy(
+              previousDeparture = last.previousDeparture,
+              node = current.node.copy(tripID = last.node.tripID)))
       var previous: Visited? = null
       return path
           .map { v ->
@@ -120,9 +124,9 @@ class Schedule(private val map: Map<NodeID, List<Transition>>) {
   }
 }
 
-fun timeToMinutes(timeStr: String): Long {
+fun timeToMinutes(timeStr: String, delimiter: Char = ':'): Time {
   // Split the string into hours, minutes, and seconds
-  val (h, m, _) = timeStr.split(':').map { it.toInt() }
+  val (h, m, _) = timeStr.split(delimiter).map { it.toInt() }
 
   // Convert hours and minutes to total minutes
 

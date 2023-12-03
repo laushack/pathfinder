@@ -55,7 +55,8 @@ class BackendService(
   var conversation: List<AssistantToUserMessage> by mutableStateOf(emptyList())
     private set
 
-  var trip: Trip by mutableStateOf(Trip(emptyList()))
+  /** The best trip offered so far. */
+  var trip: Trip? by mutableStateOf(null)
     private set
 
   /** The planning options with the assistant. */
@@ -98,3 +99,44 @@ class BackendService(
     }
   }
 }
+
+private val FakeTrip =
+    Trip(
+        pprData = PPRData(
+            priceDay = 10.0,
+            priceMonth = 100.0,
+            priceYear = 1000.0,
+            capacity = 100,
+            latitude = 46.5197,
+            longitude = 6.6323,
+            timeByFeet = 10,
+            openingTime = "08:00",
+            closingTime = "18:00",
+        ),
+        listOf(
+            TripStop(
+                tripIds = emptySet(),
+                name = "Lausanne",
+                arrivalTime = null,
+                departureTime = "12:15",
+                latitude = 46.5188,
+                longitude = 6.5593,
+            ),
+            TripStop(
+                tripIds = emptySet(),
+                name = "Fribourg",
+                arrivalTime = "13:14",
+                departureTime = "15:16",
+                latitude = 46.8065,
+                longitude = 7.1620,
+            ),
+            TripStop(
+                tripIds = emptySet(),
+                name = "Zürich",
+                arrivalTime = "15:29",
+                departureTime = "18:39",
+                latitude = 47.3769,
+                longitude = 8.5417,
+            ),
+        ),
+    )
