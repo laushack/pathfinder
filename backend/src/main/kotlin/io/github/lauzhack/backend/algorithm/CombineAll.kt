@@ -20,14 +20,13 @@ class CombineAllAlgorithm(
 
     var paths = mutableListOf<Trip>()
 
-      println(pprs.size)
-      println(pprs)
+    println(pprs.size)
+    println(pprs)
 
     for (ppr in pprs) {
       val path = algorithm.run(ppr.first.stationId, startTime + ppr.second, targetStation!!.id)
       if (path != null) {
-          println("BIte")
-          println(path)
+        println(path)
         var previousTripID: String? = null
         val trip =
             path.map {
@@ -69,14 +68,27 @@ class CombineAllAlgorithm(
                 latitude = to.lat,
                 longitude = to.lon))
 
-    paths = paths.map { Trip(it.pprData, startTripStop + it.stops + endTripStop) }.toMutableList()
+    paths =
+        paths
+            .map {
+              val trip = it.stops.toMutableList()
+              if (trip.isNotEmpty()) {
+                val firstIndex = 0
+                val lastIndex = trip.size - 1
+                trip[firstIndex] =
+                    trip[firstIndex].copy(tripIds = trip[firstIndex].tripIds + "StartId")
+                trip[lastIndex] = trip[lastIndex].copy(tripIds = trip[lastIndex].tripIds + "EndId")
+              }
+              Trip(it.pprData, startTripStop + trip + endTripStop)
+            }
+            .toMutableList()
 
     return paths
   }
 
-    fun allPPR(): List<PPRData> {
-        return pprData
-    }
+  fun allPPR(): List<PPRData> {
+    return pprData
+  }
 
   companion object {
     fun fromData(): CombineAllAlgorithm {
@@ -93,11 +105,15 @@ class CombineAllAlgorithm(
                         it[Resources.Stops.StopLon].toDouble()))
           }
 
-        val stationMap = closestStation.stations.associate { it.id to it.location }
-        val pprData = closestPPR.pprData.mapNotNull { stationMap[it.stationId]?.let { location  -> toPPRData(it, location)} }
+      val stationMap = closestStation.stations.associate { it.id to it.location }
+      val pprData =
+          closestPPR.pprData.mapNotNull {
+            stationMap[it.stationId]?.let { location -> toPPRData(it, location) }
+          }
       return CombineAllAlgorithm(closestPPR, algorithm, closestStation, infoMap, pprData)
     }
   }
+
   private fun minutesToTime(minutes: Time): String {
     val h = minutes / 60
     val m = minutes % 60

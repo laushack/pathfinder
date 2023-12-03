@@ -16,7 +16,10 @@ fun Trip.compact(): CompactTrip {
     }
   }
   return CompactTrip(
-      subTrips.values.sortedBy { it.first().first }.map { Trip(it.map { it.second }) })
+      subTrips.values
+          .sortedBy { it.first().first }
+          .map { Trip(null, it.map { it.second }) }
+          .filter { it.stops.size > 1 })
 }
 
 data class CompactTrip(val subTrips: List<Trip>)

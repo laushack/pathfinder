@@ -117,6 +117,15 @@ class Session(
       throw EarlyAbortException()
     }
 
+    val splits = currentPlanning.startTime?.split(":") ?: emptyList()
+    if (splits.size != 2 || splits[0].toIntOrNull() == null || splits[1].toIntOrNull() == null) {
+      println("Invalid time format ${currentPlanning.startTime}")
+      updateConversation(
+          "Invalid time format ${currentPlanning.startTime}. Please try again", ROLE_ASSISTANT)
+      enqueueConversationToUser()
+      throw EarlyAbortException()
+    }
+
     val trip =
         railService.computePath(
             startLocation = startLocation,

@@ -63,25 +63,30 @@ private fun Application.sockets() {
 
   routing {
     webSocket("/live") {
-      val toSend = mutableListOf<BackendToUserMessage>()
-      val session = Session(toSend::add, OpenAIService(), railService, OpenStreetMapService())
-      var keepGoing = true
-      while (keepGoing) {
-        if (toSend.isNotEmpty()) {
-          val frame = serializeToFrame(toSend.first())
-          select<Unit> {
-            outgoing.onSend(frame) { toSend.removeFirst() }
-            incoming.onReceiveCatching { message ->
-              message
-                  .onSuccess { session.process(deserializeFromFrame(it)) }
-                  .onFailure { keepGoing = false }
-                  .onClosed { keepGoing = false }
+      try {
+        val toSend = mutableListOf<BackendToUserMessage>()
+        val session = Session(toSend::add, OpenAIService(), railService, OpenStreetMapService())
+        var keepGoing = true
+        while (keepGoing) {
+          if (toSend.isNotEmpty()) {
+            val frame = serializeToFrame(toSend.first())
+            select<Unit> {
+              outgoing.onSend(frame) { toSend.removeFirst() }
+              incoming.onReceiveCatching { message ->
+                message
+                    .onSuccess { session.process(deserializeFromFrame(it)) }
+                    .onFailure { keepGoing = false }
+                    .onClosed { keepGoing = false }
+              }
             }
+          } else {
+            val message = deserializeFromFrame<UserToBackendMessage>(incoming.receive())
+            session.process(message)
           }
-        } else {
-          val message = deserializeFromFrame<UserToBackendMessage>(incoming.receive())
-          session.process(message)
         }
+      } catch (problem: Throwable) {
+        problem.printStackTrace()
+        throw problem
       }
     }
   }
