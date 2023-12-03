@@ -18,6 +18,9 @@ kotlin {
 
         // Ktor (api.ktor.io)
         implementation("io.ktor:ktor-client-js:2.3.6")
+
+        // Mapbox (docs.mapbox.com/mapbox-gl-js/api/)
+        implementation(npm("mapbox-gl", "3.0.0"))
       }
     }
   }
