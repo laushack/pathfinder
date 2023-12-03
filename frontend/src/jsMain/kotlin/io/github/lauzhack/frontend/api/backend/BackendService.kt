@@ -55,7 +55,7 @@ class BackendService(
   var conversation: List<AssistantToUserMessage> by mutableStateOf(emptyList())
     private set
 
-  var trip: String by mutableStateOf("")
+  var trip: Trip by mutableStateOf(Trip(emptyList()))
     private set
 
   /** The planning options with the assistant. */

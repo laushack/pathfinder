@@ -139,6 +139,6 @@ class Session(
   }
 
   private fun enqueueTripToUser(path: String) {
-    enqueue(BackendToUserSetTrip(path))
+    enqueue(BackendToUserSetTrip(Trip(emptyList())))
   }
 }
