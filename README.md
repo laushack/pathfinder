@@ -1,4 +1,10 @@
 # LauzHack 2023
+![P+R Pathfinder](thumbnail.jpg "P+R Pathfinder")
+## Authors
+- Alexandre Piveteau
+- Matthieu Burguburu
+- Victor Schneuwly
+- Zacharie Tevaearai
 
 ## Organization
 
