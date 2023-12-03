@@ -15,7 +15,7 @@ class Algorithm(private val schedule: Schedule) {
     val visited = mutableMapOf<NodeID, Pair<Node, NodeID>>()
     val done = mutableSetOf<NodeID>()
 
-    val start = Node(startID, startTime, "")
+    val start = Node(startID, startTime)
     priorityList.add(start)
     visited[start.id] = Pair(start, start.id)
 
@@ -62,7 +62,7 @@ class Algorithm(private val schedule: Schedule) {
   }
 }
 
-data class Node(val id: NodeID, val arrival: Time, val tripID: String)
+data class Node(val id: NodeID, val arrival: Time, val tripID: String = "")
 
 data class Transition(val departTime: Time, val destination: Node)
 
