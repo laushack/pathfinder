@@ -2,7 +2,9 @@ package mapbox.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import mapbox.MapOptions
+import io.github.lauzhack.frontend.api.backend.LocalBackendService
+import io.github.lauzhack.frontend.ui.Tokens
+import mapbox.*
 import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLDivElement
@@ -15,13 +17,14 @@ val MapBoxToken =
 fun MapBox(
     attrs: AttrBuilderContext<HTMLDivElement>? = null,
 ) {
+  val trip = LocalBackendService.current.trip
   Div(
       attrs = {
         id("map")
         attrs?.invoke(this)
       },
   ) {
-    DisposableEffect(Unit) {
+    DisposableEffect(Unit, trip) {
       val map =
           mapbox.Map(
               MapOptions {
@@ -32,6 +35,46 @@ fun MapBox(
                 zoom = 9.0 // starting zoom
               },
           )
+
+      val stopList = trip?.stops ?: emptyList()
+
+      stopList.forEach {
+        Marker(
+                MarkerOptions { color = "#FF0000" },
+            )
+            .apply { setLngLat(arrayOf(it.longitude, it.latitude)) }
+            .addTo(map)
+      }
+
+      if (stopList.size >= 2) {
+        val lineString =
+            turf.lineString(
+                (trip?.stops ?: emptyList())
+                    .map { stop -> arrayOf(stop.longitude, stop.latitude) }
+                    .toTypedArray())
+
+        map.asDynamic().on("load") {
+          map.addLayer(
+              Layer {
+                id = "route"
+                type = "line"
+                source = Source {
+                  type = "geojson"
+                  data = lineString
+                }
+                layout = Layout {
+                  lineJoin = "round"
+                  lineCap = "round"
+                }
+                paint = Paint {
+                  lineColor = Tokens.cffRed
+                  lineWidth = 32.0
+                }
+              },
+          )
+        }
+      }
+
       onDispose { map.remove() }
     }
   }
