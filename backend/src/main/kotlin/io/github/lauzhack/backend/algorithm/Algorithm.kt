@@ -124,9 +124,9 @@ class Schedule(private val map: Map<NodeID, List<Transition>>) {
   }
 }
 
-fun timeToMinutes(timeStr: String): Long {
+fun timeToMinutes(timeStr: String, delimiter: Char = ':'): Time {
   // Split the string into hours, minutes, and seconds
-  val (h, m, _) = timeStr.split(':').map { it.toInt() }
+  val (h, m, _) = timeStr.split(delimiter).map { it.toInt() }
 
   // Convert hours and minutes to total minutes
 

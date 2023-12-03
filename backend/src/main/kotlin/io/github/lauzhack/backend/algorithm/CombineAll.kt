@@ -13,7 +13,7 @@ class CombineAllAlgorithm(
     private val infoMap: Map<NodeID, NameLocation>
 ) {
   fun computeShortestPath(from: Location, to: Location, startTime: Time): List<Trip> {
-    val pprs = closestPPR.findClosestPPR(from)
+    val pprs = closestPPR.findClosestPPR(from, startTime)
     val targetStation = closestStation.findClosestStation(to)
 
     val paths = mutableListOf<Trip>()
