@@ -7,8 +7,6 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -30,25 +28,26 @@ private fun httpClient() =
 class OpenStreetMapService() {
   private val client = httpClient()
 
-  suspend fun search(request: OpenStreetMapRequest): OpenStreetMapResponse {
-    return client.get("/search") {
-      parameter("format", request.format)
-      parameter("q", request.q)
-    }.body()
+  fun printSomething() {
+    println("Hello world!")
+  }
+
+  suspend fun search(request: OpenStreetMapRequest): List<OpenStreetMapResponse> {
+    return client.get("/search?format=${request.format}&q=${request.q}").body()
   }
 
   /** Sends a prompt to the OpenStreetMap API and returns the Location, or null if not found. */
   suspend fun getLatLong(location: String): Location? {
     val request = OpenStreetMapRequest(q = location)
-    val response = search(request)
 
-    val lat = response.lat
-    val lon = response.lon
-
-    if (lat != null && lon != null) {
-      return Location(lat.toDouble(), lon.toDouble())
+    search(request).firstOrNull()?.let {
+      return Location(
+          lat = it.lat.toDouble(),
+          lon = it.lon.toDouble(),
+      )
     }
 
+    println("$location not found")
     return null
   }
 }

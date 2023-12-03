@@ -54,7 +54,7 @@ class Session(
     enqueuePlanningToUser()
   }
 
-  private fun updatePlanning(json: String) {
+  private suspend fun updatePlanning(json: String) {
     val extracted = DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
     currentPlanning = currentPlanning.updatedWith(extracted)
 
@@ -64,14 +64,29 @@ class Session(
     }
   }
 
-  private fun computeAndSendTrip() {
-    val startStationId = railService.getStartStationId()
-    val endStationId = railService.getEndStationId()
-    val startTime = timeToMinutes(currentPlanning.startTime!!)
+  private suspend fun computeAndSendTrip() {
+    val startLocation = openStreetMapService.getLatLong(currentPlanning.startLocation!!)
+    if (startLocation == null) {
+      println("Could not find location for ${currentPlanning.startLocation}")
+    }
 
-    val path = railService.computePath(startStationId, startTime, endStationId)
-    val trip = railService.pathToString(path)
-    println("Computed trip: $trip")
+    val endLocation = openStreetMapService.getLatLong(currentPlanning.endLocation!!)
+    if (endLocation == null) {
+      println("Could not find location for ${currentPlanning.endLocation}")
+    }
+
+    print("Computing trip...")
+    val trip =
+        railService
+            .computePath(
+                startLocation = startLocation!!,
+                endLocation = endLocation!!,
+                startTime = timeToMinutes(currentPlanning.startTime!!),
+            )
+            ?.let {
+              railService.pathToString(it)
+            } ?: "No path found"
+
     enqueueTripToUser(trip)
   }
 
