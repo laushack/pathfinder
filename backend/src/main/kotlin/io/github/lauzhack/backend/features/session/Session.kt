@@ -90,13 +90,12 @@ class Session(
     println("Computing trip from $startLocation to $endLocation")
 
     val trip =
-        railService
-            .computePath(
-                startLocation = startLocation,
-                endLocation = endLocation,
-                startTime = timeToMinutes(currentPlanning.startTime!!),
-            )
-            ?.let { railService.pathToString(it) } ?: "No path found"
+        railService.computePath(
+            startLocation = startLocation,
+            endLocation = endLocation,
+            startTime = timeToMinutes(currentPlanning.startTime!!),
+        )
+    //            ?.let { railService.pathToString(it) } ?: "No path found"
 
     enqueueTripToUser(trip)
   }
@@ -138,7 +137,7 @@ class Session(
         ))
   }
 
-  private fun enqueueTripToUser(path: String) {
-    enqueue(BackendToUserSetTrip(Trip(emptyList())))
+  private fun enqueueTripToUser(trip: Trip) {
+    enqueue(BackendToUserSetTrip(trip))
   }
 }
