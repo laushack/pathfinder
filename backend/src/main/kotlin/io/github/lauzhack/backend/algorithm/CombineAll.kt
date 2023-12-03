@@ -16,7 +16,8 @@ class CombineAllAlgorithm(
     val pprs = closestPPR.findClosestPPR(from, startTime)
     val targetStation = closestStation.findClosestStation(to)
 
-    val paths = mutableListOf<Trip>()
+    var paths = mutableListOf<Trip>()
+
     for (ppr in pprs) {
       val path = algorithm.run(ppr.first.stationId, startTime + ppr.second, targetStation!!.id)
       if (path != null) {
@@ -38,6 +39,29 @@ class CombineAllAlgorithm(
                 }))
       }
     }
+
+    val startTripStop =
+        listOf(
+            TripStop(
+                tripIds = setOf("StartId"),
+                name = "Start",
+                arrivalTime = null,
+                departureTime = null,
+                latitude = from.lat,
+                longitude = from.lon))
+
+    val endTripStop =
+        listOf(
+            TripStop(
+                tripIds = setOf("EndId"),
+                name = "End",
+                arrivalTime = null,
+                departureTime = null,
+                latitude = to.lat,
+                longitude = to.lon))
+
+    paths = paths.map { Trip(startTripStop + it.stops + endTripStop) }.toMutableList()
+
     return paths
   }
 

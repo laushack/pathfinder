@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import io.github.lauzhack.frontend.api.backend.LocalBackendService
 import io.github.lauzhack.frontend.ui.Tokens
+import io.github.lauzhack.frontend.ui.Tokens.blue
+import io.github.lauzhack.frontend.ui.Tokens.cffRed
 import mapbox.*
 import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.Div
@@ -40,7 +42,20 @@ fun MapBox(
 
       stopList.forEach {
         Marker(
-                MarkerOptions { color = "#FF0000" },
+                MarkerOptions {
+                  color =
+                      when (it.name) {
+                        "Start" -> {
+                          blue
+                        }
+                        "End" -> {
+                          blue
+                        }
+                        else -> {
+                          cffRed
+                        }
+                      }
+                },
             )
             .apply { setLngLat(arrayOf(it.longitude, it.latitude)) }
             .addTo(map)

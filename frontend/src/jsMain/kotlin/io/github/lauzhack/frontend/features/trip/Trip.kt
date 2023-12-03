@@ -3,6 +3,7 @@ package io.github.lauzhack.frontend.features.trip
 import androidx.compose.runtime.Composable
 import io.github.lauzhack.common.api.Trip
 import io.github.lauzhack.common.api.TripStop
+import io.github.lauzhack.frontend.ui.Tokens.blue
 import io.github.lauzhack.frontend.ui.Tokens.body1
 import io.github.lauzhack.frontend.ui.Tokens.body2
 import io.github.lauzhack.frontend.ui.Tokens.cffRed
@@ -75,7 +76,7 @@ private fun TripStep(
           px(8f)
           py(8f)
           border(2f)
-          borderColor(cffRed)
+          borderColor(if (from.name == "Start" || to.name == "End") blue else cffRed)
           roundedLg()
         }
         attrs?.invoke(this)
