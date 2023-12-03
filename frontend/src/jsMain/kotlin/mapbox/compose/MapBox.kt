@@ -46,7 +46,7 @@ fun MapBox(
       val stopList = trip?.stops ?: emptyList()
 
       stopList.forEach {
-        Marker(
+        val m = Marker(
                 MarkerOptions {
                   color =
                       when (it.name) {
@@ -64,6 +64,13 @@ fun MapBox(
             )
             .apply { setLngLat(arrayOf(it.longitude, it.latitude)) }
             .addTo(map)
+
+          m.asDynamic().addEventListener(
+              "click",
+              {
+                println("Clicked on")
+              },
+          )
       }
 
       if (stopList.size >= 2) {
