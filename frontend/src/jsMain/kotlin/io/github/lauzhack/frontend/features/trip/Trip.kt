@@ -1,6 +1,7 @@
 package io.github.lauzhack.frontend.features.trip
 
 import androidx.compose.runtime.*
+import io.github.lauzhack.common.api.PPRData
 import io.github.lauzhack.common.api.Trip
 import io.github.lauzhack.common.api.TripStop
 import io.github.lauzhack.common.api.compact
@@ -14,6 +15,8 @@ import io.github.lauzhack.frontend.ui.Tokens.h5
 import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.material.Icon
 import io.github.lauzhack.frontend.ui.material.IconButton
+import io.github.lauzhack.frontend.ui.material.IconPath
+import io.github.lauzhack.frontend.ui.material.Icons
 import io.github.lauzhack.frontend.ui.material.Icons.ChevronDown
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.*
@@ -41,8 +44,153 @@ fun Trip(trip: Trip, attrs: AttrBuilderContext<HTMLDivElement>? = null) {
       },
   ) {
     TripHelp()
+    val pprData = trip.pprData
+    if (pprData != null) {
+      Div(
+          attrs = {
+            inlineTailwind {
+              flex()
+              flexRow()
+              itemsCenter()
+            }
+          },
+      ) {
+        H5(
+            attrs = {
+              inlineTailwind {
+                h5()
+                grow()
+              }
+            },
+        ) {
+          Text("Suggested P+R:")
+        }
+        Img(
+            src = "./assets/pr.png",
+            attrs = {
+              inlineTailwind {
+                h(40f)
+                rounded()
+                shadow()
+              }
+            },
+        )
+      }
+      TripPr(pprData)
+    }
     H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested trip:") }
     trip.compact().subTrips.forEach { SubTrip(it) }
+  }
+}
+
+private fun openCloseTimeParser(time: String): String {
+  val split = time.split(":")
+  // If 3 ints, then it's hh:mm:ss
+  return if (split.size == 3) {
+    val hour = split[0]
+    val minute = split[1]
+    "$hour:$minute"
+  } else {
+    time
+  }
+}
+
+// I want to go to Geneva form Lausanne at 8:00
+
+@Composable
+private fun TripPr(
+    pprData: PPRData,
+    attrs: AttrBuilderContext<HTMLDivElement>? = null,
+) {
+  Div(
+      attrs = {
+        inlineTailwind {
+          caption()
+          borderDotted()
+          borderColor(cffRed)
+          border(2f)
+          roundedLg()
+          p(8f)
+          flex()
+          flexCol()
+        }
+        attrs?.invoke(this)
+      },
+  ) {
+    PrrInfo(
+        Icons.PRRTime,
+        {
+          Text("Walk time to train:")
+          B(attrs = { inlineTailwind { fontSemiBold() } }) {
+            Text(if (pprData.timeByFeet < 1) "< 1 min" else "${pprData.timeByFeet} min")
+          }
+        })
+    if (pprData.capacity != 0) {
+      PrrInfo(
+          Icons.PRRCapacity,
+          {
+            Text("Capacity:")
+            B(attrs = { inlineTailwind { fontSemiBold() } }) { Text("${pprData.capacity} spots") }
+          },
+      )
+    }
+    PrrInfo(
+        Icons.PRRPrice,
+        {
+          Text("Price: ")
+          B(attrs = { inlineTailwind { fontSemiBold() } }) { Text("${pprData.priceDay}.- (day)") }
+          if (pprData.priceMonth != 0.0) {
+            B(attrs = { inlineTailwind { fontSemiBold() } }) {
+              Text(", ${pprData.priceMonth}.- (month)")
+            }
+          }
+          if (pprData.priceMonth != 0.0) {
+            B(attrs = { inlineTailwind { fontSemiBold() } }) {
+              Text(", ${pprData.priceYear}.- (year)")
+            }
+          }
+        },
+    )
+    PrrInfo(
+        Icons.PRROpen,
+        {
+          Text("Open: ")
+          B(attrs = { inlineTailwind { fontSemiBold() } }) {
+            Text(
+                "${openCloseTimeParser(pprData.openingTime)}-${openCloseTimeParser(pprData.closingTime)}")
+          }
+        },
+    )
+  }
+}
+
+@Composable
+private fun PrrInfo(
+    icon: IconPath,
+    text: @Composable () -> Unit,
+    attrs: AttrBuilderContext<HTMLSpanElement>? = null,
+) {
+  Span(
+      attrs = {
+        inlineTailwind {
+          flex()
+          flexRow()
+          itemsCenter()
+          gap(8f)
+        }
+        attrs?.invoke(this)
+      },
+  ) {
+    Icon(
+        path = icon,
+        attrs = {
+          inlineTailwind {
+            h(16f)
+            w(16f)
+          }
+        },
+    )
+    text()
   }
 }
 
