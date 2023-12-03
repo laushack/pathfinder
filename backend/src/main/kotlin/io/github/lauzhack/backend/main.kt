@@ -4,6 +4,7 @@ package io.github.lauzhack.backend
 
 import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.api.openAI.OpenAIService
+import io.github.lauzhack.backend.api.openAI.OpenStreetMapService
 import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.backend.features.session.Session
@@ -100,7 +101,7 @@ private fun Application.sockets() {
   routing {
     webSocket("/live") {
       val toSend = mutableListOf<BackendToUserMessage>()
-      val session = Session(toSend::add, OpenAIService(), railService)
+      val session = Session(toSend::add, OpenAIService(), railService, OpenStreetMapService())
       var keepGoing = true
       while (keepGoing) {
         if (toSend.isNotEmpty()) {

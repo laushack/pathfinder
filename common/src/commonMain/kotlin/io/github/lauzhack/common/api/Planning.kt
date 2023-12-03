@@ -34,6 +34,10 @@ fun PlanningOptions.updatedWith(other: PlanningOptions): PlanningOptions =
         subscription = other.subscription ?: subscription,
     )
 
+fun PlanningOptions.invalidateStartLocation(): PlanningOptions = copy(startLocation = null)
+
+fun PlanningOptions.invalidateEndLocation(): PlanningOptions = copy(endLocation = null)
+
 fun PlanningOptions.isSufficient(): Boolean =
     listOf(startLocation, endLocation, startTime).all { it != null }
 
