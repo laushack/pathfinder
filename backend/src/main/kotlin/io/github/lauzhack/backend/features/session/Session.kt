@@ -9,6 +9,9 @@ import io.github.lauzhack.common.api.*
 import io.github.lauzhack.common.api.AssistantRole.Assistant
 import io.github.lauzhack.common.api.AssistantRole.User
 import io.github.lauzhack.common.api.PlanningOptions
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.encodeToString
 
 class EarlyAbortException : Exception()
@@ -28,6 +31,7 @@ class Session(
     private const val ROLE_SYSTEM = "system"
     private const val ROLE_ASSISTANT = "assistant"
     private const val STRING_JSON_INJECT = "\$INJECT_CURRENT_JSON\$"
+    private const val STRING_TIME_INJECT = "\$INJECT_CURRENT_TIME\$"
   }
 
   suspend fun process(message: UserToBackendMessage) {
@@ -38,13 +42,16 @@ class Session(
           } catch (e: EarlyAbortException) {
             println("Aborting early")
           }
-      is UserToAssistantSetPlanning -> currentPlanning = message.planningOptions
+      is UserToAssistantSetPlanning ->
+          updatePlanning(DefaultJsonSerializer.encodeToString(message.planningOptions))
     }
   }
 
   private suspend fun handleUserToAssistantMessage(message: UserToAssistantMessage) {
     updateConversation(message.text, ROLE_USER)
-    val extractJsonPrompt = ExtractJsonFromUserMessagePrompt
+    val currentTimeDate = currentTimeHumanFormat()
+    val extractJsonPrompt =
+        ExtractJsonFromUserMessagePrompt.replace(STRING_TIME_INJECT, currentTimeDate)
     val extractPromptResponse = openAIResponseForConversation(extractJsonPrompt)
     val json = getFirstChoice(extractPromptResponse) ?: "{}"
 
@@ -61,12 +68,26 @@ class Session(
     enqueuePlanningToUser()
   }
 
+  private fun currentTimeHumanFormat(): String {
+    val currentMoment = Clock.System.now()
+    val currentDateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    // Formatting the date manually since kotlinx-datetime doesn't support DateTimeFormatter
+    val dayOfWeek = currentDateTime.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+    val dayOfMonth = currentDateTime.dayOfMonth
+    val month = currentDateTime.month.name.lowercase().replaceFirstChar { it.uppercase() }
+    val year = currentDateTime.year
+    val hour = currentDateTime.hour
+    val minute = currentDateTime.minute.toString().padStart(2, '0')
+
+    return "$dayOfWeek, ${dayOfMonth}th of $month $year ${hour}h$minute"
+  }
+
   private suspend fun updatePlanning(json: String) {
     val extracted = DefaultJsonSerializer.decodeFromString(PlanningOptions.serializer(), json)
     currentPlanning = currentPlanning.updatedWith(extracted)
 
     if (currentPlanning.isSufficient()) {
-      println("Sufficient planning")
       computeAndSendTrip()
     }
   }
@@ -87,15 +108,12 @@ class Session(
       throw EarlyAbortException()
     }
 
-    println("Computing trip from $startLocation to $endLocation")
-
     val trip =
         railService.computePath(
             startLocation = startLocation,
             endLocation = endLocation,
             startTime = timeToMinutes(currentPlanning.startTime!!),
         )
-    //            ?.let { railService.pathToString(it) } ?: "No path found"
 
     enqueueTripToUser(trip)
   }
