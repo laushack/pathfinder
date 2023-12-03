@@ -46,11 +46,52 @@ fun Trip(trip: Trip, attrs: AttrBuilderContext<HTMLDivElement>? = null) {
     TripHelp()
     val pprData = trip.pprData
     if (pprData != null) {
-      H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested P+R:") }
+      Div(
+          attrs = {
+            inlineTailwind {
+              flex()
+              flexRow()
+              itemsCenter()
+            }
+          },
+      ) {
+        H5(
+            attrs = {
+              inlineTailwind {
+                h5()
+                grow()
+              }
+            },
+        ) {
+          Text("Suggested P+R:")
+        }
+        Img(
+            src = "./assets/pr.png",
+            attrs = {
+              inlineTailwind {
+                h(40f)
+                rounded()
+                shadow()
+              }
+            },
+        )
+      }
       TripPr(pprData)
     }
     H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested trip:") }
     trip.compact().subTrips.forEach { SubTrip(it) }
+  }
+}
+
+private fun openCloseTimeParser(time: String): String {
+  val split = time.split(":")
+  // If 3 ints, then it's hh:mm:ss
+  return if (split.size == 3) {
+    val hour = split[0]
+    val minute = split[1]
+    "$hour:$minute"
+  } else {
+    time
   }
 }
 
@@ -76,10 +117,50 @@ private fun TripPr(
         attrs?.invoke(this)
       },
   ) {
-    PrrInfo(Icons.SendIcon, { Text("Walk time to train: ${pprData.timeByFeet} min") })
-    PrrInfo(Icons.SendIcon, { Text("Capacity: ${pprData.capacity}") })
-    PrrInfo(Icons.SendIcon, { Text("Price: ${pprData.priceDay}") })
-    PrrInfo(Icons.SendIcon, { Text("Open at: ${pprData.openingTime} ${pprData.closingTime}") })
+    PrrInfo(
+        Icons.PRRTime,
+        {
+          Text("Walk time to train:")
+          B(attrs = { inlineTailwind { fontSemiBold() } }) {
+            Text(if (pprData.timeByFeet < 1) "< 1 min" else "${pprData.timeByFeet} min")
+          }
+        })
+    if (pprData.capacity != 0) {
+      PrrInfo(
+          Icons.PRRCapacity,
+          {
+            Text("Capacity:")
+            B(attrs = { inlineTailwind { fontSemiBold() } }) { Text("${pprData.capacity} spots") }
+          },
+      )
+    }
+    PrrInfo(
+        Icons.PRRPrice,
+        {
+          Text("Price: ")
+          B(attrs = { inlineTailwind { fontSemiBold() } }) { Text("${pprData.priceDay}.- (day)") }
+          if (pprData.priceMonth != 0.0) {
+            B(attrs = { inlineTailwind { fontSemiBold() } }) {
+              Text(", ${pprData.priceMonth}.- (month)")
+            }
+          }
+          if (pprData.priceMonth != 0.0) {
+            B(attrs = { inlineTailwind { fontSemiBold() } }) {
+              Text(", ${pprData.priceYear}.- (year)")
+            }
+          }
+        },
+    )
+    PrrInfo(
+        Icons.PRROpen,
+        {
+          Text("Open: ")
+          B(attrs = { inlineTailwind { fontSemiBold() } }) {
+            Text(
+                "${openCloseTimeParser(pprData.openingTime)}-${openCloseTimeParser(pprData.closingTime)}")
+          }
+        },
+    )
   }
 }
 
