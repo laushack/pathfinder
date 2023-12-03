@@ -7,14 +7,16 @@ import io.github.lauzhack.frontend.ui.Tokens.cffPinkLight
 import io.github.lauzhack.frontend.ui.Tokens.cffRed
 import io.github.lauzhack.frontend.ui.Tokens.cffRedLight
 import io.github.lauzhack.frontend.ui.Tokens.cffRedVeryLight
+import io.github.lauzhack.frontend.ui.Tokens.h5
+import io.github.lauzhack.frontend.ui.Tokens.subtitle1
 import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.material.*
+import io.github.lauzhack.frontend.ui.material.Button
+import io.github.lauzhack.frontend.ui.material.Input
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.placeholder
-import org.jetbrains.compose.web.dom.AttrBuilderContext
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 
@@ -44,6 +46,7 @@ fun ChatFloatingWindow(chat: ChatState) {
       grow0()
     }
     Div(attrs = { classes(className) }) {
+      key(Unit) { ChatPlaceholder() }
       chat.conversation.forEach { message ->
         key(message) {
           Div {
@@ -73,6 +76,65 @@ fun ChatFloatingWindow(chat: ChatState) {
         onSuggestionClick = chat::onSuggestionClick,
         attrs = { inlineTailwind { selfStretch() } },
     )
+  }
+}
+
+@Composable
+private fun ChatPlaceholder() {
+  Div(
+      attrs = {
+        inlineTailwind {
+          flex()
+          flexCol()
+          itemsCenter()
+          gap(8f)
+        }
+      },
+  ) {
+    Img(
+        src = "./assets/illustration.png",
+        attrs = { inlineTailwind { wFull() } },
+    )
+    Div(
+        attrs = {
+          inlineTailwind {
+            flex()
+            flexRow()
+            gap(8f)
+            itemsCenter()
+          }
+        },
+    ) {
+      Img(
+          src = "./assets/cff.png",
+          attrs = { inlineTailwind { w(72f) } },
+      )
+      Span(
+          attrs = { inlineTailwind { h5() } },
+      ) {
+        Text("Plan your P+R trip!")
+      }
+      Img(
+          src = "./assets/cff.png",
+          attrs = { inlineTailwind { w(72f) } },
+      )
+    }
+    Span(
+        attrs = {
+          inlineTailwind {
+            subtitle1()
+            flex()
+            flexCol()
+            gap(8f)
+          }
+        },
+    ) {
+      Span {
+        Text(
+            "Ask me anything about P+R trips, I'll do my best to help you! Let me know where you want to go, where you're coming from, and I'll suggest you the best P+R trip.")
+      }
+      Span { Text("Start chatting below:") }
+    }
   }
 }
 
