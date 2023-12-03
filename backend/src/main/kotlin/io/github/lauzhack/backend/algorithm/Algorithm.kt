@@ -52,9 +52,8 @@ class Algorithm(private val schedule: Schedule) {
       val second = path.last()
       val departure =
           schedule.map[start.id]!!
-              .filter { it.destination.id == second.id && it.departTime >= start.arrival }
-              .sortedBy { it.departTime }
-              .first()
+              .filter { i -> i.destination.id == second.id && i.departTime >= start.arrival }
+              .minByOrNull { i -> i.departTime }!!
       val first = Node(start.id, departure.departTime, second.tripID)
       path.add(first) // TODO: not add regular start but the one of the train
       path.reverse()
