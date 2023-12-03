@@ -11,6 +11,8 @@ import io.github.lauzhack.common.api.AssistantRole.User
 import io.github.lauzhack.common.api.PlanningOptions
 import kotlinx.serialization.encodeToString
 
+class EarlyAbortException : Exception()
+
 class Session(
     private val enqueue: (BackendToUserMessage) -> Unit,
     private val openAIService: OpenAIService,
@@ -30,7 +32,12 @@ class Session(
 
   suspend fun process(message: UserToBackendMessage) {
     when (message) {
-      is UserToAssistantMessage -> handleUserToAssistantMessage(message)
+      is UserToAssistantMessage ->
+          try {
+            handleUserToAssistantMessage(message)
+          } catch (e: EarlyAbortException) {
+            println("Aborting early")
+          }
       is UserToAssistantSetPlanning -> currentPlanning = message.planningOptions
     }
   }
@@ -59,33 +66,37 @@ class Session(
     currentPlanning = currentPlanning.updatedWith(extracted)
 
     if (currentPlanning.isSufficient()) {
-      println("Planning is sufficient, computing trip...")
+      println("Sufficient planning")
       computeAndSendTrip()
     }
   }
 
   private suspend fun computeAndSendTrip() {
     val startLocation = openStreetMapService.getLatLong(currentPlanning.startLocation!!)
-    if (startLocation == null) {
-      println("Could not find location for ${currentPlanning.startLocation}")
-    }
-
     val endLocation = openStreetMapService.getLatLong(currentPlanning.endLocation!!)
-    if (endLocation == null) {
-      println("Could not find location for ${currentPlanning.endLocation}")
+
+    if (startLocation == null || endLocation == null) {
+      println(
+          "Could not find location for ${currentPlanning.startLocation} or ${currentPlanning.endLocation}")
+      updateConversation(
+          "Could not find start location ${currentPlanning.startLocation}, or end location ${currentPlanning.endLocation}. Please try other locations",
+          ROLE_ASSISTANT)
+      currentPlanning.invalidateStartLocation()
+      currentPlanning.invalidateEndLocation()
+      enqueueConversationToUser()
+      throw EarlyAbortException()
     }
 
-    print("Computing trip...")
+    println("Computing trip from $startLocation to $endLocation")
+
     val trip =
         railService
             .computePath(
-                startLocation = startLocation!!,
-                endLocation = endLocation!!,
+                startLocation = startLocation,
+                endLocation = endLocation,
                 startTime = timeToMinutes(currentPlanning.startTime!!),
             )
-            ?.let {
-              railService.pathToString(it)
-            } ?: "No path found"
+            ?.let { railService.pathToString(it) } ?: "No path found"
 
     enqueueTripToUser(trip)
   }
@@ -97,11 +108,11 @@ class Session(
       openAIService.prompt(
           OpenAIRequest(messages = conversation + OpenAIMessage(role = role, content = prompt)))
 
-  private fun updateConversation(question: String, role: String) {
+  private fun updateConversation(message: String, role: String) {
     conversation.add(
         OpenAIMessage(
             role = role,
-            content = question,
+            content = message,
         ),
     )
   }
@@ -121,7 +132,6 @@ class Session(
   }
 
   private fun enqueuePlanningToUser() {
-    println("Updated planning: $currentPlanning")
     enqueue(
         AssistantToUserSetPlanning(
             planningOptions = currentPlanning,

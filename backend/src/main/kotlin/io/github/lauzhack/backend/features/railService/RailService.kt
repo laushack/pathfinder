@@ -3,17 +3,14 @@ package io.github.lauzhack.backend.features.railService
 import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.data.Resources
 
-typealias StationId = Int
-
 class RailService {
 
-  private val schedule = Schedule.fromData()
-  private val algorithm = Algorithm(schedule)
-  private val closestPPR = ClosestPPRAlgorithm.fromData()
+  private val closestPPR = CombineAllAlgorithm.fromData()
 
   fun computePath(startLocation: Location, endLocation: Location, startTime: Time): List<Node>? {
     val closestPPR = closestPPR.computeShortestPath(startLocation, endLocation, startTime)
     if (closestPPR.isEmpty()) {
+      println("Empty closestPPR")
       return null
     }
     return closestPPR.minBy { it.last().arrival }

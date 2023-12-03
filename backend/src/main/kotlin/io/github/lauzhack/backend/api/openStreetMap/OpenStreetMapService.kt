@@ -28,12 +28,18 @@ private fun httpClient() =
 class OpenStreetMapService() {
   private val client = httpClient()
 
-  fun printSomething() {
-    println("Hello world!")
-  }
-
   suspend fun search(request: OpenStreetMapRequest): List<OpenStreetMapResponse> {
-    return client.get("/search?format=${request.format}&q=${request.q}").body()
+    val response =
+        client.get("/search") {
+          parameter("format", request.format)
+          parameter("q", request.q)
+        }
+    try {
+      return response.body<List<OpenStreetMapResponse>>()
+    } catch (e: Exception) {
+      println("Got exception $e")
+      throw e
+    }
   }
 
   /** Sends a prompt to the OpenStreetMap API and returns the Location, or null if not found. */
@@ -46,8 +52,6 @@ class OpenStreetMapService() {
           lon = it.lon.toDouble(),
       )
     }
-
-    println("$location not found")
     return null
   }
 }
