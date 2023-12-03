@@ -40,18 +40,23 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
         return null
       }
 
-      val from = timeToMinutes(split[0].trim())
-      val to = timeToMinutes(split[1].trim())
-      return BindingTime(from, to)
+      return try {
+        val delimiter = '.'
+        val from = timeToMinutes(split[0].trim(), delimiter)
+        val to = timeToMinutes(split[1].trim(), delimiter)
+        BindingTime(from, to)
+      } catch (e: NumberFormatException) {
+        null
+      }
+    }
+
+    private fun parseGeoPos(location: String): Location {
+      val split = location.split(',')
+      val lat = split[0].trim().toDouble()
+      val lon = split[1].trim().toDouble()
+      return Location(lat, lon)
     }
   }
-}
-
-fun parseGeoPos(location: String): Location {
-  val split = location.split(',')
-  val lat = split[0].trim().toDouble()
-  val lon = split[1].trim().toDouble()
-  return Location(lat, lon)
 }
 
 /** Each park plus rail points, parsed from Mobilitat.csv. */
