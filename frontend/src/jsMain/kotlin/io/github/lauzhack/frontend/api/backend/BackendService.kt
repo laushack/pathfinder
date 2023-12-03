@@ -102,6 +102,17 @@ class BackendService(
 
 private val FakeTrip =
     Trip(
+        pprData = PPRData(
+            priceDay = 10.0,
+            priceMonth = 100.0,
+            priceYear = 1000.0,
+            capacity = 100,
+            latitude = 46.5197,
+            longitude = 6.6323,
+            timeByFeet = 10,
+            openingTime = "08:00",
+            closingTime = "18:00",
+        ),
         listOf(
             TripStop(
                 tripIds = emptySet(),

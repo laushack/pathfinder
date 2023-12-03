@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Trip(
+    val pprData: PPRData?,
     val stops: List<TripStop>,
 )
 
@@ -34,3 +35,17 @@ data class TripStop(
 data class BackendToUserSetTrip(
     val trip: Trip,
 ) : BackendToUserMessage()
+
+@Serializable
+data class PPRData(
+    val priceDay: Double,
+    val priceMonth: Double,
+    val priceYear: Double,
+    val capacity: Int,
+    val latitude: Double,
+    val longitude: Double,
+    // In minutes
+    val timeByFeet: Int,
+    val openingTime: String,
+    val closingTime: String,
+)
