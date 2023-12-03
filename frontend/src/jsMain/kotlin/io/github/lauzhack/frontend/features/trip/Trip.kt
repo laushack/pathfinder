@@ -101,10 +101,12 @@ private fun SubTrip(
     ) {
       Text("${from.name} → ${to.name}")
     }
-    Span(
-        attrs = { inlineTailwind { body2() } },
-    ) {
-      Text("${from.departureTime ?: "Start"} → ${to.arrivalTime ?: "End"}")
+    if (from.departureTime != null || to.arrivalTime != null) {
+      Span(
+          attrs = { inlineTailwind { body2() } },
+      ) {
+        Text("${from.departureTime ?: "Start"} → ${to.arrivalTime ?: "End"}")
+      }
     }
     if (intermediaryStops.isNotEmpty()) {
       IconButton(
@@ -180,10 +182,12 @@ private fun TripStep(
     ) {
       Text("${from.name} → ${to.name}")
     }
-    Span(
-        attrs = { inlineTailwind { body2() } },
-    ) {
-      Text("${from.departureTime ?: "Start"} → ${to.arrivalTime ?: "End"}")
+    if (from.departureTime != null || to.arrivalTime != null) {
+      Span(
+          attrs = { inlineTailwind { body2() } },
+      ) {
+        Text("${from.departureTime ?: "Start"} → ${to.arrivalTime ?: "End"}")
+      }
     }
   }
 }
