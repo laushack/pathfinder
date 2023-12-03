@@ -7,17 +7,19 @@ typealias NodeID = Int
 
 typealias Time = Long
 
+data class Visited(val node: Node, val previous: NodeID, val previousDeparture: Time)
+
 class Algorithm(private val schedule: Schedule) {
   fun run(startID: NodeID, startTime: Time, endID: NodeID): List<Node>? {
     val pairComparator = Comparator<Node> { a, b -> (a.arrival - b.arrival).toInt() }
     val priorityList = PriorityQueue(pairComparator)
     // map containing the visited nodes along with the time it took to get there
-    val visited = mutableMapOf<NodeID, Pair<Node, NodeID>>()
+    val visited = mutableMapOf<NodeID, Visited>()
     val done = mutableSetOf<NodeID>()
 
     val start = Node(startID, startTime)
     priorityList.add(start)
-    visited[start.id] = Pair(start, start.id)
+    visited[start.id] = Visited(start, start.id, startTime)
 
     while (priorityList.isNotEmpty()) {
       val current = priorityList.poll()
@@ -31,44 +33,50 @@ class Algorithm(private val schedule: Schedule) {
       done.add(current.id)
 
       val neighbors = schedule.getDepartures(current.id, current.arrival)
-      for (neighbor in neighbors) {
+      for (transition in neighbors) {
+        val neighbor = transition.destination
+        val departure = transition.departTime
 
         if (!visited.containsKey(neighbor.id) ||
-            neighbor.arrival < visited[neighbor.id]!!.first.arrival) {
-          visited[neighbor.id] = Pair(neighbor, current.id)
+            neighbor.arrival < visited[neighbor.id]!!.node.arrival) {
+          visited[neighbor.id] = Visited(neighbor, current.id, departure)
           priorityList.add(neighbor)
         }
       }
     }
 
     visited[endID]?.let {
-      val path = mutableListOf<Node>()
+      val path = mutableListOf<Visited>()
       var current = it
-      while (current.first.id != start.id) {
-        path.add(current.first)
-        current = visited[current.second]!!
+      while (current.node.id != start.id) {
+        path.add(current)
+        current = visited[current.previous]!!
       }
-      // Don't look
-      val second = path.last()
-      val departure =
-          schedule.map[start.id]!!
-              .filter { i -> i.destination.id == second.id && i.departTime >= start.arrival }
-              .minByOrNull { i -> i.departTime }!!
-      val first = Node(start.id, departure.departTime, second.tripID)
-      path.add(first) // TODO: not add regular start but the one of the train
-      path.reverse()
+      path.add(current.copy(previousDeparture = path.last().previousDeparture))
+      var previous: Visited? = null
       return path
+          .map { v ->
+            val node = previous?.let { p -> v.node.copy(departure = p.previousDeparture) } ?: v.node
+            previous = v
+            node
+          }
+          .reversed()
     } ?: return null
   }
 }
 
-data class Node(val id: NodeID, val arrival: Time, val tripID: String = "")
+data class Node(
+    val id: NodeID,
+    val arrival: Time,
+    val tripID: String = "",
+    val departure: Time? = null
+)
 
 data class Transition(val departTime: Time, val destination: Node)
 
 data class StopTime(val stopSequence: Int, val id: NodeID, val arrival: Time, val departure: Time)
 
-class Schedule(val map: Map<NodeID, List<Transition>>) {
+class Schedule(private val map: Map<NodeID, List<Transition>>) {
 
   companion object {
     fun fromData(): Schedule {
@@ -104,11 +112,10 @@ class Schedule(val map: Map<NodeID, List<Transition>>) {
     }
   }
 
-  fun getDepartures(node: NodeID, after: Time): Set<Node> {
+  fun getDepartures(node: NodeID, after: Time): Set<Transition> {
     return map[node]
         // We don't wait more than 1 hour in one station
         ?.filter { after <= it.departTime && it.departTime <= after + 60 }
-        ?.map { it.destination }
         ?.toSet() ?: emptySet()
   }
 }

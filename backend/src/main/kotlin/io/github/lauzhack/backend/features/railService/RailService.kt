@@ -1,38 +1,20 @@
 package io.github.lauzhack.backend.features.railService
 
 import io.github.lauzhack.backend.algorithm.*
-import io.github.lauzhack.backend.data.Resources
+import io.github.lauzhack.common.api.Trip
 
 class RailService {
 
-  private val closestPPR = CombineAllAlgorithm.fromData()
+  private val combinedAlgo = CombineAllAlgorithm.fromData()
 
-  fun computePath(startLocation: Location, endLocation: Location, startTime: Time): List<Node>? {
-    val closestPPR = closestPPR.computeShortestPath(startLocation, endLocation, startTime)
-    if (closestPPR.isEmpty()) {
+  fun computePath(startLocation: Location, endLocation: Location, startTime: Time): Trip {
+    val shortestPaths = combinedAlgo.computeShortestPath(startLocation, endLocation, startTime)
+    if (shortestPaths.isEmpty()) {
       println("Empty closestPPR")
-      return null
+      return Trip(emptyList())
     }
-    return closestPPR.minBy { it.last().arrival }
-  }
-
-  fun pathToString(path: List<Node>): String {
-    val result = StringBuilder()
-    path.forEachIndexed { i, n ->
-      result.append("$i: $n -> ${nameMap[n.id]} -- ${minutesToTime(n.arrival)}\n")
+    return shortestPaths.minBy {
+      it.stops.last().arrivalTime?.let { t -> timeToMinutes(t) } ?: Time.MAX_VALUE
     }
-
-    return result.toString()
-  }
-
-  private val nameMap: Map<NodeID, String> =
-      Resources.Stops.data().associate {
-        it[Resources.Stops.StopId].split(":")[0].toInt() to it[Resources.Stops.StopName]
-      }
-
-  private fun minutesToTime(minutes: Time): String {
-    val hours = minutes / 60
-    val minutes = minutes % 60
-    return "%02d:%02d:00".format(hours, minutes)
   }
 }
