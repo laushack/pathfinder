@@ -1,6 +1,7 @@
 package io.github.lauzhack.frontend.features.trip
 
 import androidx.compose.runtime.*
+import io.github.lauzhack.common.api.PPRData
 import io.github.lauzhack.common.api.Trip
 import io.github.lauzhack.common.api.TripStop
 import io.github.lauzhack.common.api.compact
@@ -14,6 +15,8 @@ import io.github.lauzhack.frontend.ui.Tokens.h5
 import io.github.lauzhack.frontend.ui.Tokens.white
 import io.github.lauzhack.frontend.ui.material.Icon
 import io.github.lauzhack.frontend.ui.material.IconButton
+import io.github.lauzhack.frontend.ui.material.IconPath
+import io.github.lauzhack.frontend.ui.material.Icons
 import io.github.lauzhack.frontend.ui.material.Icons.ChevronDown
 import io.github.lauzhack.frontend.ui.tailwind.*
 import org.jetbrains.compose.web.dom.*
@@ -41,8 +44,72 @@ fun Trip(trip: Trip, attrs: AttrBuilderContext<HTMLDivElement>? = null) {
       },
   ) {
     TripHelp()
+    val pprData = trip.pprData
+    if (pprData != null) {
+      H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested P+R:") }
+      TripPr(pprData)
+    }
     H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested trip:") }
     trip.compact().subTrips.forEach { SubTrip(it) }
+  }
+}
+
+// I want to go to Geneva form Lausanne at 8:00
+
+@Composable
+private fun TripPr(
+    pprData: PPRData,
+    attrs: AttrBuilderContext<HTMLDivElement>? = null,
+) {
+  Div(
+      attrs = {
+        inlineTailwind {
+          caption()
+          borderDotted()
+          borderColor(cffRed)
+          border(2f)
+          roundedLg()
+          p(8f)
+          flex()
+          flexCol()
+        }
+        attrs?.invoke(this)
+      },
+  ) {
+    PrrInfo(Icons.SendIcon, { Text("Walk time to train: ${pprData.timeByFeet} min") })
+    PrrInfo(Icons.SendIcon, { Text("Capacity: ${pprData.capacity}") })
+    PrrInfo(Icons.SendIcon, { Text("Price: ${pprData.priceDay}") })
+    PrrInfo(Icons.SendIcon, { Text("Open at: ${pprData.openingTime} ${pprData.closingTime}") })
+  }
+}
+
+@Composable
+private fun PrrInfo(
+    icon: IconPath,
+    text: @Composable () -> Unit,
+    attrs: AttrBuilderContext<HTMLSpanElement>? = null,
+) {
+  Span(
+      attrs = {
+        inlineTailwind {
+          flex()
+          flexRow()
+          itemsCenter()
+          gap(8f)
+        }
+        attrs?.invoke(this)
+      },
+  ) {
+    Icon(
+        path = icon,
+        attrs = {
+          inlineTailwind {
+            h(16f)
+            w(16f)
+          }
+        },
+    )
+    text()
   }
 }
 
