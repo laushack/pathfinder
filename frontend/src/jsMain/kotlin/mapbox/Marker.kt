@@ -7,4 +7,6 @@ external class Marker(options: MarkerOptions = definedExternally) {
   fun setLngLat(lngLat: Array<Double>): Marker
 
   fun addTo(map: Map): Marker
+
+  fun setPopup(popup: Popup): Marker
 }
