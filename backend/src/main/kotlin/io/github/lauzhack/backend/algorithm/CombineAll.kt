@@ -60,7 +60,20 @@ class CombineAllAlgorithm(
                 latitude = to.lat,
                 longitude = to.lon))
 
-    paths = paths.map { Trip(startTripStop + it.stops + endTripStop) }.toMutableList()
+    paths =
+        paths
+            .map {
+              val trip = it.stops.toMutableList()
+              if (trip.isNotEmpty()) {
+                val firstIndex = 0
+                val lastIndex = trip.size - 1
+                trip[firstIndex] =
+                    trip[firstIndex].copy(tripIds = trip[firstIndex].tripIds + "StartId")
+                trip[lastIndex] = trip[lastIndex].copy(tripIds = trip[lastIndex].tripIds + "EndId")
+              }
+              Trip(startTripStop + trip + endTripStop)
+            }
+            .toMutableList()
 
     return paths
   }

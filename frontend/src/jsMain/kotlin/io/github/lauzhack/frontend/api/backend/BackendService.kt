@@ -81,15 +81,19 @@ class BackendService(
   init {
     scope.launch {
       while (true) {
-        client.webSocket("/live") {
-          while (true) {
-            select {
-              toSend.onReceive { msg -> sendSerialized<UserToBackendMessage>(msg) }
-              incoming.onReceive {
-                when (val msg = deserializeFromFrame<BackendToUserMessage>(it)) {
-                  is AssistantToUserConversation -> conversation = msg.messages
-                  is AssistantToUserSetPlanning -> planningOptions = msg.planningOptions
-                  is BackendToUserSetTrip -> trip = msg.trip
+        runCatching {
+          client.webSocket("/live") {
+            runCatching {
+              while (true) {
+                select {
+                  toSend.onReceive { msg -> sendSerialized<UserToBackendMessage>(msg) }
+                  incoming.onReceive {
+                    when (val msg = deserializeFromFrame<BackendToUserMessage>(it)) {
+                      is AssistantToUserConversation -> conversation = msg.messages
+                      is AssistantToUserSetPlanning -> planningOptions = msg.planningOptions
+                      is BackendToUserSetTrip -> trip = msg.trip
+                    }
+                  }
                 }
               }
             }
