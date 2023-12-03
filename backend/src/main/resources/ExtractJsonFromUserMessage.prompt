@@ -10,8 +10,6 @@ Here is the structure you should use for the JSON:
   "start-location": "Starting location", //(e.g. Zurich)
   "end-location": "Destination location", //(e.g. Geneva)
   "start-time": "hh:mm", //(e.g. 16:32 (24h format))
-  "end-time": "hh:mm", //(e.g. 18:12 (24h format))
-  "start-date": "data", //(e.g. 30.12.2023 (Full European date format))
   "subscription": "subscription", //(e.g. "demi-tarif", "AG", "Voie 7")
 }```
 
