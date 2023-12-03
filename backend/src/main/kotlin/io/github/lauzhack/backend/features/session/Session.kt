@@ -9,6 +9,8 @@ import io.github.lauzhack.common.api.*
 import io.github.lauzhack.common.api.AssistantRole.Assistant
 import io.github.lauzhack.common.api.AssistantRole.User
 import io.github.lauzhack.common.api.PlanningOptions
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -92,9 +94,16 @@ class Session(
     }
   }
 
-  private suspend fun computeAndSendTrip() {
-    val startLocation = openStreetMapService.getLatLong(currentPlanning.startLocation!!)
-    val endLocation = openStreetMapService.getLatLong(currentPlanning.endLocation!!)
+  private suspend fun computeAndSendTrip() = coroutineScope {
+    val startLocationDeferred = async {
+      openStreetMapService.getLatLong(currentPlanning.startLocation!!)
+    }
+    val endLocationDeferred = async {
+      openStreetMapService.getLatLong(currentPlanning.endLocation!!)
+    }
+
+    val startLocation = startLocationDeferred.await()
+    val endLocation = endLocationDeferred.await()
 
     if (startLocation == null || endLocation == null) {
       println(
