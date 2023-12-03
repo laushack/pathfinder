@@ -3,9 +3,11 @@ package io.github.lauzhack.backend.algorithm
 import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.data.Resources.Mobilitat.Geopos
 import io.github.lauzhack.backend.data.Resources.Mobilitat.OPUIC
+import io.github.lauzhack.backend.data.Resources.Mobilitat.Parkrail
 import io.github.lauzhack.backend.data.Resources.Mobilitat.ParkrailPriceDay
 import io.github.lauzhack.backend.data.Resources.Mobilitat.ParkrailPriceMonth
 import io.github.lauzhack.backend.data.Resources.Mobilitat.ParkrailPriceYear
+import io.github.lauzhack.common.api.PPRData
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -27,16 +29,17 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
       location: Location,
       optimization: OptimizePrice = OptimizePrice.NONE,
   ): List<Pair<PPR, Time>> {
-      val totalDistance = pprData.sumOf { distance(location, it.location) }
-      val totalCost = pprData.sumOf {
+    val totalDistance = pprData.sumOf { distance(location, it.location) }
+    val totalCost =
+        pprData.sumOf {
           when (optimization) {
-              OptimizePrice.NONE -> 0.0
-              OptimizePrice.DAY -> it.priceDay
-              OptimizePrice.MONTH -> it.priceMonth
-              OptimizePrice.YEAR -> it.priceYear
+            OptimizePrice.NONE -> 0.0
+            OptimizePrice.DAY -> it.priceDay
+            OptimizePrice.MONTH -> it.priceMonth
+            OptimizePrice.YEAR -> it.priceYear
           }
-      }
-      return pprData
+        }
+    return pprData
         .sortedBy { ppr -> score(ppr, location, optimization, totalDistance, totalCost) }
         .take(5)
         .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toLong()) }
@@ -49,10 +52,31 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
           Resources.Mobilitat.data().map {
             val location = parseGeoPos(it[Geopos])
             val id = it[OPUIC].toInt()
-            val priceDay = try {it[ParkrailPriceDay].toDouble()} catch (e: Exception) {0.0}
-            val priceMonth = try {it[ParkrailPriceMonth].toDouble() } catch (e: Exception) {0.0}
-            val priceYear = try {it[ParkrailPriceYear].toDouble() } catch (e: Exception) {0.0}
-            PPR(it[OPUIC].toInt(), location, priceDay, priceMonth, priceYear)
+            val priceDay =
+                try {
+                  it[ParkrailPriceDay].toDouble()
+                } catch (e: Exception) {
+                  0.0
+                }
+            val priceMonth =
+                try {
+                  it[ParkrailPriceMonth].toDouble()
+                } catch (e: Exception) {
+                  0.0
+                }
+            val priceYear =
+                try {
+                  it[ParkrailPriceYear].toDouble()
+                } catch (e: Exception) {
+                  0.0
+                }
+            val capacity =
+                try {
+                  it[Parkrail].toInt()
+                } catch (e: Exception) {
+                  0
+                }
+            PPR(id, location, priceDay, priceMonth, priceYear, capacity)
           }
       return ClosestPPRAlgorithm(pprData)
     }
@@ -72,8 +96,23 @@ data class PPR(
     val location: Location,
     val priceDay: Double,
     val priceMonth: Double,
-    val priceYear: Double
+    val priceYear: Double,
+    val capacity: Int,
 )
+
+fun toPPRData(ppr: PPR, stationLocation: Location): PPRData {
+  val timeByFeet = distance(ppr.location, stationLocation) / (60)
+  return PPRData(
+      ppr.priceDay,
+      ppr.priceMonth,
+      ppr.priceYear,
+      ppr.capacity,
+      ppr.location.lat,
+      ppr.location.lon,
+      timeByFeet.toInt(),
+      "",
+      "")
+}
 
 data class Location(val lat: Double, val lon: Double)
 
@@ -91,15 +130,22 @@ fun distance(a: Location, b: Location): Double {
   return R * y
 }
 
-fun score(a: PPR, from: Location, optimization: OptimizePrice, totalDistance: Double, totalCost: Double): Double {
+fun score(
+    a: PPR,
+    from: Location,
+    optimization: OptimizePrice,
+    totalDistance: Double,
+    totalCost: Double
+): Double {
   val distance = distance(a.location, from) / totalDistance
-  val price = when (optimization) {
-    OptimizePrice.NONE -> 0.0
-    OptimizePrice.DAY -> a.priceDay
-    OptimizePrice.MONTH -> a.priceMonth
-    OptimizePrice.YEAR -> a.priceYear
-  } / totalCost
-    val W_D = 0.6
-    val W_P = 0.4
-    return W_D * distance + W_P * price
+  val price =
+      when (optimization) {
+        OptimizePrice.NONE -> 0.0
+        OptimizePrice.DAY -> a.priceDay
+        OptimizePrice.MONTH -> a.priceMonth
+        OptimizePrice.YEAR -> a.priceYear
+      } / totalCost
+  val W_D = 0.6
+  val W_P = 0.4
+  return W_D * distance + W_P * price
 }
