@@ -20,9 +20,14 @@ class CombineAllAlgorithm(
 
     var paths = mutableListOf<Trip>()
 
+      println(pprs.size)
+      println(pprs)
+
     for (ppr in pprs) {
       val path = algorithm.run(ppr.first.stationId, startTime + ppr.second, targetStation!!.id)
       if (path != null) {
+          println("BIte")
+          println(path)
         var previousTripID: String? = null
         val trip =
             path.map {

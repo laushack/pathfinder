@@ -28,21 +28,10 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
   fun findClosestPPR(
       location: Location,
       time: Time,
-      optimization: OptimizePrice = OptimizePrice.NONE,
   ): List<Pair<PPR, Time>> {
-    val totalDistance = pprData.sumOf { distance(location, it.location) }
-    val totalCost =
-        pprData.sumOf {
-          when (optimization) {
-            OptimizePrice.NONE -> 0.0
-            OptimizePrice.DAY -> it.priceDay
-            OptimizePrice.MONTH -> it.priceMonth
-            OptimizePrice.YEAR -> it.priceYear
-          }
-        }
     return pprData
         .filter { ppr -> ppr.bindingTime?.contains(time) ?: true }
-        .sortedBy { ppr -> score(ppr, location, optimization, totalDistance, totalCost) }
+        .sortedBy { ppr -> distance(ppr.location, location) }
         .take(5)
         .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toLong()) }
   }
@@ -155,26 +144,6 @@ fun distance(a: Location, b: Location): Double {
   val y = 2 * atan2(sqrt(x), sqrt(1 - x))
 
   return R * y
-}
-
-fun score(
-    a: PPR,
-    from: Location,
-    optimization: OptimizePrice,
-    totalDistance: Double,
-    totalCost: Double
-): Double {
-  val distance = distance(a.location, from) / totalDistance
-  val price =
-      when (optimization) {
-        OptimizePrice.NONE -> 0.0
-        OptimizePrice.DAY -> a.priceDay
-        OptimizePrice.MONTH -> a.priceMonth
-        OptimizePrice.YEAR -> a.priceYear
-      } / totalCost
-  val W_D = 0.6
-  val W_P = 0.4
-  return W_D * distance + W_P * price
 }
 
 data class BindingTime(val from: Time, val to: Time) {
