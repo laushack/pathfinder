@@ -11,6 +11,7 @@ import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLDivElement
 
+
 /** The token used to access the MapBox API. */
 val MapBoxToken =
     "pk.eyJ1IjoiYWxleGFuZHJlcGl2ZXRlYXVlcGZsIiwiYSI6ImNscG9xbzI1YzB1bjIyaXA2cTFmcjU5cWIifQ.xeUfLjWhZJfdNlsbowshyQ"
@@ -63,14 +64,14 @@ fun MapBox(
                 },
             )
             .apply { setLngLat(arrayOf(it.longitude, it.latitude)) }
-            .addTo(map)
 
-          m.asDynamic().addEventListener(
-              "click",
-              {
-                println("Clicked on")
-              },
-          )
+          val popup = Popup(PopupOptions {
+              closeButton = false
+          }).setHTML("<h1>${it.name}</h1><div>${it.arrivalTime ?: ""} - ${it.departureTime ?: ""}</div>")
+
+          m.setPopup(popup)
+
+          m.addTo(map)
       }
 
       if (stopList.size >= 2) {
