@@ -75,10 +75,8 @@ fun DOMScope<HTMLBodyElement>.Root() {
                 trip = currentTrip,
                 attrs = {
                   inlineTailwind {
-                    overflowYScroll()
                     maxWSm()
-                    selfStart()
-                    grow0()
+                    hFull()
                   }
                 },
             )

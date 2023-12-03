@@ -31,55 +31,65 @@ fun Trip(trip: Trip, attrs: AttrBuilderContext<HTMLDivElement>? = null) {
   Div(
       attrs = {
         inlineTailwind {
-          shadow()
-          roundedXl()
-          bgColor(white)
           flex()
           flexCol()
-          p(16f)
-          gap(16f)
           overflowYScroll()
         }
         attrs?.invoke(this)
       },
   ) {
-    TripHelp()
-    val pprData = trip.pprData
-    if (pprData != null) {
-      Div(
-          attrs = {
-            inlineTailwind {
-              flex()
-              flexRow()
-              itemsCenter()
-            }
-          },
-      ) {
-        H5(
+    Div(
+        attrs = {
+          inlineTailwind {
+            shadow()
+            roundedXl()
+            bgColor(white)
+            flex()
+            flexCol()
+            p(16f)
+            gap(16f)
+            overflowYScroll()
+          }
+        },
+    ) {
+      TripHelp()
+      val pprData = trip.pprData
+      if (pprData != null) {
+        Div(
             attrs = {
               inlineTailwind {
-                h5()
-                grow()
+                flex()
+                flexRow()
+                itemsCenter()
               }
             },
         ) {
-          Text("Suggested P+R:")
+          H5(
+              attrs = {
+                inlineTailwind {
+                  h5()
+                  grow()
+                }
+              },
+          ) {
+            Text("Suggested P+R:")
+          }
+          Img(
+              src = "./assets/pr.png",
+              attrs = {
+                inlineTailwind {
+                  h(40f)
+                  rounded()
+                  shadow()
+                }
+              },
+          )
         }
-        Img(
-            src = "./assets/pr.png",
-            attrs = {
-              inlineTailwind {
-                h(40f)
-                rounded()
-                shadow()
-              }
-            },
-        )
+        TripPr(pprData)
       }
-      TripPr(pprData)
+      H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested trip:") }
+      trip.compact().subTrips.forEach { SubTrip(it) }
     }
-    H5(attrs = { inlineTailwind { h5() } }) { Text("Suggested trip:") }
-    trip.compact().subTrips.forEach { SubTrip(it) }
   }
 }
 
