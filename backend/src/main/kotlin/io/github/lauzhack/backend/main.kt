@@ -5,7 +5,6 @@ package io.github.lauzhack.backend
 import io.github.lauzhack.backend.algorithm.*
 import io.github.lauzhack.backend.api.openAI.OpenAIService
 import io.github.lauzhack.backend.api.openAI.OpenStreetMapService
-import io.github.lauzhack.backend.data.Resources
 import io.github.lauzhack.backend.features.railService.RailService
 import io.github.lauzhack.backend.features.session.Session
 import io.github.lauzhack.backend.utils.ktor.deserializeFromFrame
@@ -33,18 +32,7 @@ fun main() {
   embeddedServer(CIO, port = port) { application() }.start(wait = true)
 }
 
-private val nameMap: Map<NodeID, String> =
-    Resources.Stops.data().associate {
-      it[Resources.Stops.StopId].split(":")[0].toInt() to it[Resources.Stops.StopName]
-    }
-
 private val railService = RailService()
-
-private fun minutesToTime(minutes: Time): String {
-  val hours = minutes / 60
-  val minutes = minutes % 60
-  return "%02d:%02d:00".format(hours, minutes)
-}
 
 /** Configures the application. */
 private fun Application.application() {
