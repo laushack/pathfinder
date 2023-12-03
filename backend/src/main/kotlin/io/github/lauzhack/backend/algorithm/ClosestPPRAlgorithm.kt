@@ -20,6 +20,23 @@ class ClosestPPRAlgorithm(val pprData: List<PPR>) {
         .map { ppr -> Pair(ppr, (distance(ppr.location, location) / (60 * 13.8)).toLong()) }
   }
 
+  /** Computes the shortest path from the given location to the end location at the given time. Using a nearby parc + rail station */
+  fun computeShortestPath(from: Location, to: Location, startTime: Time): List<List<Node>> {
+    val pprs = findClosestPPR(from)
+    val schedule = Schedule.fromData()
+    val algorithm = Algorithm(schedule)
+    val targetStation = ClosestStationAlgorithm.fromData().findClosestStation(to)
+    val paths = mutableListOf<List<Node>>()
+    for (ppr in pprs) {
+      val path = algorithm.run(ppr.first.stationId, startTime + ppr.second, targetStation!!.id)
+      if (path != null) {
+        paths.add(path)
+      }
+    }
+
+    return paths
+  }
+
   companion object {
     /** Build an algorithm from the dataset */
     fun fromData(): ClosestPPRAlgorithm {
